@@ -27,21 +27,45 @@ jobs:
       - run: bash scripts/patch_on_audio_edit_kotlin.sh
       - run: bash scripts/patch_legacy_compile_sdk.sh
       - run: flutter analyze --no-fatal-infos --no-fatal-warnings
-      - run: flutter build apk --release --build-number=${{ github.run_number }}
+      - run: flutter build apk --release --split-per-abi --build-number=${{ github.run_number }}
 
       - uses: actions/upload-artifact@v4
         with:
-          name: release-apk
-          path: build/app/outputs/flutter-apk/app-release.apk
+          name: release-apk-splits
+          path: build/app/outputs/flutter-apk/app-*-release.apk
 
-      - name: Deploy to Firebase App Distribution
+      - name: Deploy armeabi-v7a to Firebase App Distribution
         uses: wzieba/Firebase-Distribution-Github-Action@v1
         with:
           appId: 1:271519645394:android:e5c63e435db14df04d370b
           serviceCredentialsFileContent: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_JSON }}
           groups: MikesAppTester
-          file: build/app/outputs/flutter-apk/app-release.apk
+          file: build/app/outputs/flutter-apk/app-armeabi-v7a-release.apk
           releaseNotes: |
-            Build #${{ github.run_number }} (${{ github.sha }})
+            Build #${{ github.run_number }} (${{ github.sha }}) — armeabi-v7a (32-bit ARM)
+            Branch: ${{ github.ref_name }}
+            ${{ github.event.head_commit.message }}
+
+      - name: Deploy arm64-v8a to Firebase App Distribution
+        uses: wzieba/Firebase-Distribution-Github-Action@v1
+        with:
+          appId: 1:271519645394:android:e5c63e435db14df04d370b
+          serviceCredentialsFileContent: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_JSON }}
+          groups: MikesAppTester
+          file: build/app/outputs/flutter-apk/app-arm64-v8a-release.apk
+          releaseNotes: |
+            Build #${{ github.run_number }} (${{ github.sha }}) — arm64-v8a (64-bit ARM)
+            Branch: ${{ github.ref_name }}
+            ${{ github.event.head_commit.message }}
+
+      - name: Deploy x86_64 to Firebase App Distribution
+        uses: wzieba/Firebase-Distribution-Github-Action@v1
+        with:
+          appId: 1:271519645394:android:e5c63e435db14df04d370b
+          serviceCredentialsFileContent: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_JSON }}
+          groups: MikesAppTester
+          file: build/app/outputs/flutter-apk/app-x86_64-release.apk
+          releaseNotes: |
+            Build #${{ github.run_number }} (${{ github.sha }}) — x86_64 (Emulator / Intel)
             Branch: ${{ github.ref_name }}
             ${{ github.event.head_commit.message }}
