@@ -1,5 +1,7 @@
 # Flutter 3 Migration — Dokumentationsindex
 
+> **Fortsetzung der Migration:** Siehe [migration_status.md](migration_status.md) für aktuellen Stand, offene Aufgaben und Handoff-Anleitung.
+
 Baseline: `3ff5975` (Flutter 2) · Ziel: Dart 3 / Flutter 3.44
 
 Dieses Index listet alle Migrations-Dokumente und ordnet **jeden Git-Diff-Hunk** (`git diff 3ff5975`) genau einem Dokument zu.
