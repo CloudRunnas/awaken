@@ -10,11 +10,16 @@ import 'package:phoenix/src/beginning/pages/playlist/playlist_inside.dart';
 import 'package:phoenix/src/beginning/utilities/audio_handlers/artwork.dart';
 import 'package:phoenix/src/beginning/utilities/screenshot_UI.dart';
 import '../page_backend/mansion_back.dart';
-import 'package:phoenix/src/beginning/utilities/scraping/lyrics_scrape.dart';
-import '../filters.dart';
+import 'package:phoenix/src/beginning/utilities/lyrics/lyrics_controller.dart';
 
 int? indexofcurrent;
-String? lyricsDat = " ";
+String? get lyricsDat => LyricsController.inst.displayText;
+set lyricsDat(String? value) {
+  // Legacy plain-text cache writes still go through saveLyrics().
+  if (value != null && nowMediaItem.id.isNotEmpty) {
+    saveLyrics(nowMediaItem.id, value);
+  }
+}
 String? rnAccessing;
 bool onGoingProcess = false;
 bool isPlaying = false;
@@ -63,7 +68,7 @@ updateStuffs() async {
 }
 
 playThis(int indexOfSong, rnAccess) async {
-  lyricsDat = "";
+  LyricsController.inst.resetLyrics();
   if (rnAccess == "all") {
     rnAccessing = "all";
     await goToAudioService(indexOfSong, songList, songListMediaItems);
@@ -104,22 +109,7 @@ playThis(int indexOfSong, rnAccess) async {
 }
 
 void lyricsFoo() async {
-  if (!(musicBox.get("isolation") == null
-      ? false
-      : musicBox.get('isolation'))) {
-    if (musicBox.get('offlineLyrics') == null
-        ? false
-        : musicBox.get('offlineLyrics').containsKey(nowMediaItem.id)) {
-      lyricsDat = musicBox.get('offlineLyrics')[nowMediaItem.id];
-      if (lyricsDat == "Couldn't find any matching lyrics." ||
-          lyricsDat == "" ||
-          lyricsDat == " ") {
-        holdUpLyrics();
-      }
-    } else {
-      holdUpLyrics();
-    }
-  }
+  await LyricsController.inst.loadForTrack(nowMediaItem);
 }
 
 void addToQueue(MediaItem mediaitem) async {
@@ -180,14 +170,10 @@ Future<void> shuffleMode() async {
 }
 
 void holdUpLyrics() async {
-  String artistsLyric = nowMediaItem.artist.toString();
-  String songNameLyric = nowMediaItem.title.toString();
-  songNameLyric = aestheticText(songNameLyric);
-  if (artistsLyric == "<UNKNOWN>") {
-    artistsLyric = " ";
-  }
-  await lyricsFetch(artistsLyric, songNameLyric, nowMediaItem.id);
-  globalBigNow.rawNotify();
+  await LyricsController.inst.loadForTrack(nowMediaItem);
+  try {
+    globalBigNow.rawNotify();
+  } catch (_) {}
 }
 
 void saveLyrics(songPath, lyric) async {

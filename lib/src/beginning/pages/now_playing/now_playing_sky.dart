@@ -15,6 +15,7 @@ import 'package:phoenix/src/beginning/widgets/custom/marquee.dart';
 import 'package:phoenix/src/beginning/widgets/dialogues/on_hold.dart';
 import 'package:phoenix/src/beginning/widgets/dialogues/phoenix_visualizer.dart';
 import 'package:phoenix/src/beginning/widgets/now_art.dart';
+import 'package:phoenix/src/beginning/widgets/lyrics/lyrics_panel.dart';
 import 'package:phoenix/src/beginning/widgets/seek_bar.dart';
 import 'package:provider/provider.dart';
 
@@ -197,27 +198,12 @@ class _NowPlayingSkyState extends State<NowPlayingSky>
                                             Colors.transparent
                                           ]).createShader(Rect.fromLTRB(0, 0,
                                               bounds.width, bounds.height)),
-                                      child: SingleChildScrollView(
-                                        controller: lyricscrollController,
-                                        padding: EdgeInsets.only(
-                                            bottom: deviceHeight! / 18,
-                                            top: deviceHeight! / 18),
-                                        physics: const BouncingScrollPhysics(),
-                                        child: Text(
-                                          lyricsDat ?? "",
-                                          textAlign: TextAlign.center,
-                                          style: TextStyle(
-                                            wordSpacing: 2,
-                                            fontSize: deviceWidth! / 18,
-                                            fontWeight: FontWeight.w600,
-                                            color:
-                                                musicBox.get("dynamicArtDB") ??
-                                                        true
-                                                    ? isArtworkDark!
-                                                        ? Colors.white
-                                                        : Colors.black
-                                                    : Colors.white,
-                                          ),
+                                      child: LyricsPanel(
+                                        plainScrollController:
+                                            lyricscrollController,
+                                        plainPadding: EdgeInsets.only(
+                                          bottom: deviceHeight! / 18,
+                                          top: deviceHeight! / 18,
                                         ),
                                       ),
                                     ),
@@ -667,28 +653,12 @@ class _NowPlayingSkyState extends State<NowPlayingSky>
                                                   0,
                                                   bounds.width,
                                                   bounds.height)),
-                                          child: SingleChildScrollView(
-                                            controller: lyricscrollController,
-                                            padding: EdgeInsets.only(
-                                                bottom: deviceHeight! / 18,
-                                                top: deviceHeight! / 18),
-                                            physics:
-                                                const BouncingScrollPhysics(),
-                                            child: Text(
-                                              lyricsDat ?? "",
-                                              textAlign: TextAlign.center,
-                                              style: TextStyle(
-                                                wordSpacing: 2,
-                                                fontSize: deviceWidth! / 18,
-                                                fontWeight: FontWeight.w600,
-                                                color: musicBox.get(
-                                                            "dynamicArtDB") ??
-                                                        true
-                                                    ? isArtworkDark!
-                                                        ? Colors.white
-                                                        : Colors.black
-                                                    : Colors.white,
-                                              ),
+                                          child: LyricsPanel(
+                                            plainScrollController:
+                                                lyricscrollController,
+                                            plainPadding: EdgeInsets.only(
+                                              bottom: deviceHeight! / 18,
+                                              top: deviceHeight! / 18,
                                             ),
                                           ),
                                         ),
@@ -1181,28 +1151,12 @@ class _NowPlayingSkyState extends State<NowPlayingSky>
                                                   0,
                                                   bounds.width,
                                                   bounds.height)),
-                                          child: SingleChildScrollView(
-                                            controller: lyricscrollController,
-                                            padding: EdgeInsets.only(
-                                                bottom: deviceHeight! / 18,
-                                                top: deviceHeight! / 18),
-                                            physics:
-                                                const BouncingScrollPhysics(),
-                                            child: Text(
-                                              lyricsDat ?? "",
-                                              textAlign: TextAlign.center,
-                                              style: TextStyle(
-                                                wordSpacing: 2,
-                                                fontSize: deviceWidth! / 18,
-                                                fontWeight: FontWeight.w600,
-                                                color: musicBox.get(
-                                                            "dynamicArtDB") ??
-                                                        true
-                                                    ? isArtworkDark!
-                                                        ? Colors.white
-                                                        : Colors.black
-                                                    : Colors.white,
-                                              ),
+                                          child: LyricsPanel(
+                                            plainScrollController:
+                                                lyricscrollController,
+                                            plainPadding: EdgeInsets.only(
+                                              bottom: deviceHeight! / 18,
+                                              top: deviceHeight! / 18,
                                             ),
                                           ),
                                         ),

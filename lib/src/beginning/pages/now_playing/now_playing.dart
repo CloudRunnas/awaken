@@ -5,6 +5,7 @@ import 'package:phoenix/src/beginning/widgets/custom/marquee.dart';
 import 'package:phoenix/src/beginning/widgets/dialogues/phoenix_visualizer.dart';
 import 'package:phoenix/src/beginning/widgets/now_art.dart';
 import 'package:phoenix/src/beginning/widgets/seek_bar.dart';
+import 'package:phoenix/src/beginning/widgets/lyrics/lyrics_panel.dart';
 import '../../utilities/constants.dart';
 import '../../widgets/dialogues/double_tap.dart';
 import 'package:phoenix/src/beginning/utilities/provider/provider.dart';
@@ -529,59 +530,14 @@ class _NowPlayingState extends State<NowPlaying> with TickerProviderStateMixin {
                                         ),
                                       ],
                                     ),
-                                    child: lyricsDat ==
-                                            "Couldn't find any matching lyrics."
-                                        ? Center(
-                                            child: Container(
-                                              width: deviceWidth! / 1.05,
-                                              padding: EdgeInsets.only(
-                                                  top: deviceWidth! / 18.5,
-                                                  left: deviceWidth! / 20,
-                                                  right: deviceWidth! / 20,
-                                                  bottom: deviceWidth! / 12),
-                                              child: Text(lyricsDat ?? "",
-                                                  textAlign: TextAlign.center,
-                                                  style: TextStyle(
-                                                    wordSpacing: 2,
-                                                    fontSize: deviceWidth! / 18,
-                                                    fontFamily: "Raleway",
-                                                    fontWeight: FontWeight.w600,
-                                                    color: musicBox.get(
-                                                                "dynamicArtDB") ??
-                                                            true
-                                                        ? nowColor
-                                                        : kMaterialBlack,
-                                                  )),
-                                            ),
-                                          )
-                                        : SingleChildScrollView(
-                                            physics:
-                                                const BouncingScrollPhysics(),
-                                            scrollDirection: Axis.vertical,
-                                            child: Container(
-                                              width: deviceWidth! / 1.05,
-                                              padding: EdgeInsets.only(
-                                                  top: deviceWidth! / 18.5,
-                                                  left: deviceWidth! / 20,
-                                                  right: deviceWidth! / 20,
-                                                  bottom: deviceWidth! / 12),
-                                              child: Text(
-                                                lyricsDat ?? "",
-                                                textAlign: TextAlign.center,
-                                                style: TextStyle(
-                                                  wordSpacing: 2,
-                                                  fontSize: deviceWidth! / 18,
-                                                  fontFamily: "Raleway",
-                                                  fontWeight: FontWeight.w600,
-                                                  color: musicBox.get(
-                                                              "dynamicArtDB") ??
-                                                          true
-                                                      ? nowColor
-                                                      : kMaterialBlack,
-                                                ),
-                                              ),
-                                            ),
-                                          ),
+                                    child: LyricsPanel(
+                                      plainPadding: EdgeInsets.only(
+                                        top: deviceWidth! / 18.5,
+                                        left: deviceWidth! / 20,
+                                        right: deviceWidth! / 20,
+                                        bottom: deviceWidth! / 12,
+                                      ),
+                                    ),
                                   ),
                                 ),
                               ),
@@ -1094,56 +1050,14 @@ class _NowPlayingState extends State<NowPlaying> with TickerProviderStateMixin {
                                   ),
                                 ],
                               ),
-                              child: lyricsDat ==
-                                      "Couldn't find any matching lyrics."
-                                  ? Center(
-                                      child: Container(
-                                        width: deviceWidth! / 1.05,
-                                        padding: EdgeInsets.only(
-                                            top: deviceWidth! / 18.5,
-                                            left: deviceWidth! / 20,
-                                            right: deviceWidth! / 20,
-                                            bottom: deviceWidth! / 12),
-                                        child: Text(lyricsDat ?? "",
-                                            textAlign: TextAlign.center,
-                                            style: TextStyle(
-                                              wordSpacing: 2,
-                                              fontSize: deviceWidth! / 18,
-                                              fontFamily: "Raleway",
-                                              fontWeight: FontWeight.w600,
-                                              color: musicBox.get(
-                                                          "dynamicArtDB") ??
-                                                      true
-                                                  ? nowColor
-                                                  : kMaterialBlack,
-                                            )),
-                                      ),
-                                    )
-                                  : SingleChildScrollView(
-                                      physics: const BouncingScrollPhysics(),
-                                      scrollDirection: Axis.vertical,
-                                      child: Container(
-                                        width: deviceWidth! / 1.05,
-                                        padding: EdgeInsets.only(
-                                            top: deviceWidth! / 18.5,
-                                            left: deviceWidth! / 20,
-                                            right: deviceWidth! / 20,
-                                            bottom: deviceWidth! / 12),
-                                        child: Text(lyricsDat ?? "",
-                                            textAlign: TextAlign.center,
-                                            style: TextStyle(
-                                              wordSpacing: 2,
-                                              fontSize: deviceWidth! / 18,
-                                              fontFamily: "Raleway",
-                                              fontWeight: FontWeight.w600,
-                                              color: musicBox.get(
-                                                          "dynamicArtDB") ??
-                                                      true
-                                                  ? nowColor
-                                                  : kMaterialBlack,
-                                            )),
-                                      ),
-                                    ),
+                              child: LyricsPanel(
+                                plainPadding: EdgeInsets.only(
+                                  top: deviceWidth! / 18.5,
+                                  left: deviceWidth! / 20,
+                                  right: deviceWidth! / 20,
+                                  bottom: deviceWidth! / 12,
+                                ),
+                              ),
                             ),
                           ),
                         ),

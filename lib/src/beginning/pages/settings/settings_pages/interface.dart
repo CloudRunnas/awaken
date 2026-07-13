@@ -232,6 +232,34 @@ class _InterfaceState extends State<Interface> {
                           activeColor: kCorrect,
                           checkColor: kMaterialBlack,
                           subtitle: const Text(
+                            "Read lyrics from audio tags before sidecar .lrc files.",
+                            style: TextStyle(
+                              color: Colors.white38,
+                            ),
+                          ),
+                          title: const Text(
+                            "Prioritize Embedded Lyrics",
+                            style: TextStyle(
+                              color: Colors.white,
+                            ),
+                          ),
+                          value: musicBox.get("prioritizeEmbeddedLyrics") ??
+                              false,
+                          onChanged: (newValue) {
+                            setState(() {
+                              musicBox.put(
+                                  "prioritizeEmbeddedLyrics", newValue);
+                            });
+                          },
+                          controlAffinity: ListTileControlAffinity.leading,
+                        ),
+                      ),
+                      Material(
+                        color: Colors.transparent,
+                        child: CheckboxListTile(
+                          activeColor: kCorrect,
+                          checkColor: kMaterialBlack,
+                          subtitle: const Text(
                             "Use albumart as background",
                             style: TextStyle(
                               color: Colors.white38,
