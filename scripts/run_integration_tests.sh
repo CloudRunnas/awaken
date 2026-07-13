@@ -38,11 +38,24 @@ bash scripts/patch_legacy_compile_sdk.sh
 
 if ! adb devices | grep -q "emulator-5554[[:space:]]*device"; then
   echo "Starting emulator '${AVD_NAME}'..."
-  emulator -avd "$AVD_NAME" -no-window -no-audio -no-boot-anim -gpu swiftshader_indirect &
+  emulator -avd "$AVD_NAME" -no-window -no-audio -no-boot-anim -no-accel -gpu swiftshader_indirect &
   EMULATOR_PID=$!
-  adb wait-for-device
-  until [[ "$(adb shell getprop sys.boot_completed 2>/dev/null | tr -d '\r')" == "1" ]]; do
+  for _ in $(seq 1 120); do
+    if adb devices | grep -q "emulator-5554[[:space:]]*device"; then
+      break
+    fi
+    if ! kill -0 "$EMULATOR_PID" 2>/dev/null; then
+      echo "Emulator process exited before adb connected. KVM may be unavailable on this host."
+      exit 1
+    fi
     sleep 2
+  done
+  if ! adb devices | grep -q "emulator-5554[[:space:]]*device"; then
+    echo "Timed out waiting for emulator. Check integration_test_run.log"
+    exit 1
+  fi
+  until [[ "$(adb shell getprop sys.boot_completed 2>/dev/null | tr -d '\r')" == "1" ]]; do
+    sleep 5
   done
   echo "Emulator boot complete."
 else
