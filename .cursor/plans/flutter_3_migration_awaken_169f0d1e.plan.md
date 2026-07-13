@@ -16,10 +16,10 @@ todos:
     status: completed
   - id: code-migration
     content: Code-Anpassungen in init.dart, background.dart, set_ringtone.dart, constants.dart, main.dart
-    status: pending
+    status: completed
   - id: ui-preserve
     content: "useMaterial3: false setzen, keine Layout-Änderungen, nur Deprecation-Fixes"
-    status: pending
+    status: completed
   - id: integration-tests
     content: integration_test/packages/ – je ein Test pro aktualisiertem/ersetztem Paket
     status: completed
@@ -28,7 +28,7 @@ todos:
     status: completed
   - id: ci-loop
     content: Push → CI-Logs analysieren → fixen bis APK-Build grün ist
-    status: in_progress
+    status: completed
 isProject: false
 ---
 

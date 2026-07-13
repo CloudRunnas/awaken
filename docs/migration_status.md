@@ -1,6 +1,6 @@
 # Flutter-3-Migration — Fortschrittsbericht (Handoff)
 
-> **Stand:** 2026-07-13 · **Branch:** `main` · **Letzter Commit:** `0536578`  
+> **Stand:** 2026-07-13 · **Branch:** `main` · **Letzter Commit:** `8132edc`  
 > **Baseline:** `3ff5975` — *chore: import The Phoenix Project source (Flutter 2 baseline)*  
 > **Ziel:** Flutter **3.44.1**, Dart **3.x**, grüner CI-APK-Build ohne Firebase App Distribution
 
@@ -19,7 +19,7 @@ Dieses Dokument fasst den aktuellen Migrationsstand zusammen, damit die Arbeit s
 | Integrationstests pro Paket | ✅ Erledigt (~30 Tests) |
 | `docs/migration_*.md` pro Paket | ✅ Erledigt (31 Dateien) |
 | GitHub Actions Workflow | ✅ Eingerichtet |
-| **CI APK-Build grün** | ⏳ **Offen** — letzter Fix gepusht, Run war beim Handoff noch aktiv |
+| **CI APK-Build grün** | ✅ **Erledigt** — Run #19, Artifact `release-apk` |
 
 ---
 
@@ -86,7 +86,8 @@ Diese Skripte patchen Legacy-Plugins im Pub-Cache **vor** `flutter build apk`:
 |--------|-------|----------|
 | `patch_android_namespaces.sh` | Fehlende Android-Namespaces für AGP 9 | [migration_sdk_android.md](migration_sdk_android.md) |
 | `patch_on_audio_edit_kotlin.sh` | Kotlin-Fixes in `on_audio_edit` 1.5.1 | [migration_on_audio_edit.md](migration_on_audio_edit.md) |
-| `patch_flutter_displaymode.sh` | `compileSdkVersion 33` → `34` | [migration_flutter_displaymode.md](migration_flutter_displaymode.md) |
+| `patch_legacy_compile_sdk.sh` | `compileSdkVersion` 30/33 → `34` (on_audio_edit, on_audio_query_android, flutter_displaymode) | [migration_on_audio_edit.md](migration_on_audio_edit.md) |
+| `patch_flutter_displaymode.sh` | (ersetzt durch `patch_legacy_compile_sdk.sh`) | [migration_flutter_displaymode.md](migration_flutter_displaymode.md) |
 
 ### 6. GitHub Actions (`.github/workflows/build-apk.yml`)
 
@@ -126,24 +127,23 @@ Unter `integration_test/packages/migration_*_test.dart` — Harness in `integrat
 | 8 | `on_audio_edit` Kotlin 2.x | Kotlin 1.9.24 + CI-Patch (`a9834a8`, `6b7fef3`) |
 | 9 | R8 fehlende Play-Core-Klasse | `isMinifyEnabled = false` (`6c1d7e3`) |
 | 10 | `flutter_displaymode` compileSdk 33 | Gradle-Override + CI-Patch (`6c1d7e3`, `0536578`) |
+| 11 | `on_audio_edit` compileSdk 30 (`checkReleaseAarMetadata`) | `patch_legacy_compile_sdk.sh` (`8132edc`) |
 
-### Letzter CI-Stand beim Handoff
+### Letzter CI-Stand
 
-- **Commit:** `0536578` — *fix: patch flutter_displaymode compileSdk to 34 in CI*
-- **Run:** https://github.com/CloudRunnas/awaken/actions/runs/29251214755 (Run #17)
-- **Status beim Abbruch:** `in_progress` — `flutter analyze` grün, APK-Build lief noch
-- **Artifact `release-apk`:** noch nicht hochgeladen (Build nicht abgeschlossen)
-
-**Erster Schritt beim Fortsetzen:** CI-Run #17 (oder neueren Run auf `main`) prüfen — Erfolg oder nächsten Gradle-Fehler analysieren.
+- **Commit:** `8132edc` — *fix: patch legacy plugin compileSdk for on_audio_edit and on_audio_query*
+- **Run:** https://github.com/CloudRunnas/awaken/actions/runs/29262623404 (Run #19)
+- **Status:** ✅ **success** — `flutter analyze` grün, APK gebaut
+- **Artifact `release-apk`:** verfügbar
 
 ---
 
 ## Offene Aufgaben (Priorität)
 
 ### P0 — CI grün bekommen
-1. Ergebnis von Run `29251214755` (oder aktuellstem Run) prüfen.
-2. Bei Erfolg: APK-Artifact verifizieren, ggf. lokal/manuell testen.
-3. Bei Fehler: Gradle-Log analysieren → weiteres Patch-Skript oder Dependency-Upgrade.
+1. ~~Ergebnis von Run `29251214755` (oder aktuellstem Run) prüfen.~~ ✅ Run #19 grün
+2. ~~Bei Erfolg: APK-Artifact verifizieren~~ ✅ Artifact `release-apk` vorhanden
+3. ~~Bei Fehler: Gradle-Log analysieren~~ — behoben via `patch_legacy_compile_sdk.sh`
 
 **Mögliche nächste Blocker** (basierend auf bisherigem Verlauf):
 - Weitere Legacy-Plugins mit `compileSdk < 34` (analog `flutter_displaymode` patchen)
@@ -197,6 +197,7 @@ flutter analyze --no-fatal-infos --no-fatal-warnings
 ## Commit-Historie seit Baseline
 
 ```
+8132edc fix: patch legacy plugin compileSdk for on_audio_edit and on_audio_query
 0536578 fix: patch flutter_displaymode compileSdk to 34 in CI
 6c1d7e3 fix: raise legacy plugin compileSdk and disable release R8 minify
 6b7fef3 fix: patch on_audio_edit Kotlin sources in CI for AGP 9 builds
@@ -226,7 +227,8 @@ awaken/
 ├── scripts/
 │   ├── patch_android_namespaces.sh
 │   ├── patch_on_audio_edit_kotlin.sh
-│   └── patch_flutter_displaymode.sh
+│   ├── patch_legacy_compile_sdk.sh
+│   ├── patch_flutter_displaymode.sh
 ├── android/
 │   ├── settings.gradle.kts
 │   ├── build.gradle.kts
