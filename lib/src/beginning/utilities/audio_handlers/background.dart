@@ -1,6 +1,10 @@
 import 'dart:async';
+import 'dart:io';
+import 'dart:convert';
 import 'package:audio_service/audio_service.dart';
+import 'package:ffmpeg_kit_flutter_new/ffmpeg_kit.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:phoenix/src/beginning/utilities/global_variables.dart';
 
 class AudioPlayerTask extends BaseAudioHandler {
@@ -15,6 +19,7 @@ class AudioPlayerTask extends BaseAudioHandler {
   late StreamSubscription<PlaybackEvent> _eventSubscription;
   late ConcatenatingAudioSource source;
   int clicks = 0;
+  final Map<String, Future<String>> _preprocessInFlight = {};
 
   _init() {
     // Broadcast that we're connecting, and what controls are available.
@@ -67,7 +72,7 @@ class AudioPlayerTask extends BaseAudioHandler {
       children:
           leQueue.map((item) => AudioSource.uri(Uri.parse(item.id))).toList(),
     );
-    await _audioPlayer.setAudioSource(source, preload: false, initialIndex: 0);
+    await _setSourceWithPreprocessFallback(source, initialIndex: 0);
     mediaItem.add(leQueue[0]);
     _audioPlayer.setLoopMode(LoopMode.all);
     addToQueueIndex = -1;
@@ -93,7 +98,101 @@ class AudioPlayerTask extends BaseAudioHandler {
 
   @override
   Future<void> play() async {
-    _audioPlayer.play();
+    try {
+      await _audioPlayer.play();
+    } catch (_) {
+      // If the current source fails to start, try preprocessing the current track.
+      final idx = _audioPlayer.currentIndex;
+      if (idx == null || idx < 0 || idx >= leQueue.length) rethrow;
+      final originalPath = leQueue[idx].id;
+      final cachePath = await _maybePreprocessToCache(originalPath);
+      await _audioPlayer.setAudioSource(
+        AudioSource.uri(Uri.file(cachePath)),
+        preload: false,
+        initialIndex: 0,
+      );
+      await _audioPlayer.play();
+    }
+  }
+
+  Future<void> _setSourceWithPreprocessFallback(ConcatenatingAudioSource src,
+      {required int initialIndex}) async {
+    try {
+      await _audioPlayer.setAudioSource(src,
+          preload: false, initialIndex: initialIndex);
+    } catch (_) {
+      // Fallback: preprocess only the initial item and set it as a single source.
+      if (leQueue.isEmpty) rethrow;
+      final originalPath = leQueue[initialIndex].id;
+      final cachePath = await _maybePreprocessToCache(originalPath);
+      await _audioPlayer.setAudioSource(
+        AudioSource.uri(Uri.file(cachePath)),
+        preload: false,
+        initialIndex: 0,
+      );
+    }
+  }
+
+  Future<String> _maybePreprocessToCache(String originalPath) async {
+    // Only preprocess local files.
+    final originalFile = File(originalPath);
+    if (!await originalFile.exists()) {
+      return originalPath;
+    }
+
+    final stat = await originalFile.stat();
+    final cacheDir = await getTemporaryDirectory();
+    final outDir = Directory('${cacheDir.path}/preprocessed_audio');
+    if (!await outDir.exists()) {
+      await outDir.create(recursive: true);
+    }
+
+    final key = _fnv1a64(
+      utf8.encode(
+          '$originalPath|${stat.size}|${stat.modified.millisecondsSinceEpoch}'),
+    );
+    final outPath = '${outDir.path}/$key.mp3';
+
+    final outFile = File(outPath);
+    if (await outFile.exists()) {
+      return outPath;
+    }
+
+    // Avoid duplicated preprocessing for the same key.
+    _preprocessInFlight[outPath] ??= () async {
+      final cmd =
+          '-y -i "${_escapeForFfmpeg(originalPath)}" -codec:a libmp3lame -b:a 320k -joint_stereo 1 "${_escapeForFfmpeg(outPath)}"';
+      final session = await FFmpegKit.execute(cmd);
+      final rc = await session.getReturnCode();
+      if (rc == null || !rc.isValueSuccess()) {
+        // If preprocessing fails, fall back to the original.
+        return originalPath;
+      }
+      return outPath;
+    }();
+
+    try {
+      return await _preprocessInFlight[outPath]!;
+    } finally {
+      _preprocessInFlight.remove(outPath);
+    }
+  }
+
+  static String _escapeForFfmpeg(String path) {
+    // FFmpegKit runs through a shell-like parser. Escaping quotes is sufficient here.
+    return path.replaceAll('"', '\\"');
+  }
+
+  static String _fnv1a64(List<int> bytes) {
+    // Deterministic, dependency-free hash for cache keying.
+    const int fnvOffset = 0xcbf29ce484222325;
+    const int fnvPrime = 0x100000001b3;
+    var hash = fnvOffset;
+    for (final b in bytes) {
+      hash ^= b & 0xff;
+      hash = (hash * fnvPrime) & 0xFFFFFFFFFFFFFFFF;
+    }
+    return hash.toRadixString(16).padLeft(16, '0');
   }
 
   @override

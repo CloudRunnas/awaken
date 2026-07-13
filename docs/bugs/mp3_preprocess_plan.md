@@ -57,19 +57,17 @@ Da „Stereo“-Bitstream-Variante bei dir scheitert, muss der Cache-Transcode *
 
 ### Empfohlener FFmpeg-Befehl (Cache-Ausgabe)
 
-**Joint Stereo + ohne Xing/Info Header:**
+**Joint Stereo (minimal, ohne zusätzliche „Aufräum“-Schritte):**
 
 ```bash
 ffmpeg -y -i "<original>" \
-  -map_metadata -1 \
-  -codec:a libmp3lame -b:a 320k -joint_stereo 1 -write_xing 0 \
+  -codec:a libmp3lame -b:a 320k -joint_stereo 1 \
   "<cache>.mp3"
 ```
 
 **Begründung:**
 - `-joint_stereo 1`: erzeugt die Variante, die bei dir spielt.
-- `-write_xing 0`: entfernt „Xing/Info“ Seek-Header (bei dir spielt „no xing“ auch).
-- `-map_metadata -1`: vermeidet Scene-ID3 als Nebeneffekt (nicht Ursache, aber sauber).
+- Keine weiteren Parameter (kein `-write_xing 0`, kein `-map_metadata -1`): Phoenix macht **nur** das Nötigste, um Abspielbarkeit herzustellen.
 
 ### Optional (fallback 2)
 
