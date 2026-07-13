@@ -1,26 +1,18 @@
 import '../support/package_test_harness.dart';
-import 'package:flare_loading/flare_loading.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:phoenix/src/beginning/widgets/dialogues/awakening.dart';
 
 void main() {
   initPackageIntegrationTest();
 
-  testWidgets('FlareLoading widget construction', (tester) async {
+  testWidgets('Awakening loader widget renders', (tester) async {
     await tester.pumpWidget(
-      MaterialApp(
-        home: FlareLoading(
-          height: 100,
-          width: 100,
-          startAnimation: 'searching',
-          name: 'assets/res/disc.flr',
-          alignment: Alignment.center,
-          fit: BoxFit.cover,
-          onError: (_, __) {},
-          onSuccess: (_) {},
-        ),
+      const MaterialApp(
+        home: Scaffold(body: Awakening()),
       ),
     );
-    expect(find.byType(FlareLoading), findsOneWidget);
+    expect(find.text('AWAKENING'), findsOneWidget);
+    expect(find.byType(Image), findsOneWidget);
   });
 }

@@ -1,5 +1,4 @@
 import 'package:animated_text_kit/animated_text_kit.dart';
-import 'package:flare_loading/flare_loading.dart';
 import 'package:flutter/material.dart';
 import 'package:phoenix/src/beginning/utilities/constants.dart';
 import 'package:phoenix/src/beginning/utilities/global_variables.dart';
@@ -54,19 +53,13 @@ class Awakening extends StatelessWidget {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      FlareLoading(
+                      _DiscLoader(
                         height: orientedCar
                             ? deviceHeight / 2.3
                             : deviceWidth / 1.5,
                         width: orientedCar
                             ? deviceHeight / 2.3
                             : deviceWidth / 1.5,
-                        startAnimation: 'searching',
-                        name: 'assets/res/disc.flr',
-                        alignment: Alignment.center,
-                        fit: BoxFit.cover,
-                        onError: (_, stacktrace) {},
-                        onSuccess: (_) {},
                       ),
                       Container(
                         color: Colors.transparent,
@@ -98,6 +91,50 @@ class Awakening extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+class _DiscLoader extends StatefulWidget {
+  final double height;
+  final double width;
+
+  const _DiscLoader({required this.height, required this.width});
+
+  @override
+  State<_DiscLoader> createState() => _DiscLoaderState();
+}
+
+class _DiscLoaderState extends State<_DiscLoader>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 3),
+    )..repeat();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return RotationTransition(
+      turns: _controller,
+      child: Image.asset(
+        'assets/res/phoenix.png',
+        height: widget.height,
+        width: widget.width,
+        fit: BoxFit.cover,
+        alignment: Alignment.center,
+      ),
     );
   }
 }

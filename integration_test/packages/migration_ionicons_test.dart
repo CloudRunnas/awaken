@@ -1,7 +1,7 @@
 import '../support/package_test_harness.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ionicons/ionicons.dart';
+import 'package:ionicons_plus/ionicons_plus.dart';
 
 void main() {
   initPackageIntegrationTest();

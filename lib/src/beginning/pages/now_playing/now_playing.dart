@@ -11,8 +11,8 @@ import 'package:phoenix/src/beginning/utilities/provider/provider.dart';
 import 'package:flutter/services.dart';
 import '../../widgets/dialogues/on_hold.dart';
 import 'package:phoenix/src/beginning/utilities/audio_handlers/previous_play_skip.dart';
-import 'package:ionicons/ionicons.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:ionicons_plus/ionicons_plus.dart';
+import 'package:flutter_material_design_icons/flutter_material_design_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 

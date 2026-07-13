@@ -28,8 +28,6 @@ dependencies:
   another_flushbar: ^1.12.30
   another_xlider: ^1.1.2
   animated_text_kit: ^4.2.2
-  flare_flutter: ^3.0.2
-  flare_loading: ^3.0.0
   page_transition: ^2.2.1
   palette_generator: ^0.3.3+5
   sleek_circular_slider: ^2.1.0
@@ -64,8 +62,8 @@ dependencies:
   flutter_launcher_icons: ^0.14.3
   flutter_remixicon:
     git: https://github.com/KarimAbdo/flutter_remixicon.git
-  ionicons: ^0.2.2
-  material_design_icons_flutter: ^7.0.7296
+  ionicons_plus: ^0.2.5
+  flutter_material_design_icons: ^3.1.0+7447
 
 
   # WEB Related

@@ -4,16 +4,16 @@ overview: Phoenix-Projekt (Flutter 2 / Dart 2.x) in das leere Repo CloudRunnas/a
 todos:
   - id: clone-push
     content: Phoenix master in awaken klonen, mit LICENSE mergen, initial pushen
-    status: in_progress
+    status: completed
   - id: android-toolchain
     content: Android Gradle/AGP/Kotlin auf Flutter 3.44.1-Standard migrieren (compileSdk 35)
-    status: pending
+    status: completed
   - id: sdk-pubspec
     content: SDK-Constraint auf Dart 3.x anheben und pubspec-Dependencies aktualisieren
-    status: pending
+    status: completed
   - id: replace-discontinued
     content: "Discontinued Pakete ersetzen: device_info_plus, ffmpeg_kit_flutter_new, on_audio_query 2.9+, awesome_notifications 0.10+"
-    status: pending
+    status: completed
   - id: code-migration
     content: Code-Anpassungen in init.dart, background.dart, set_ringtone.dart, constants.dart, main.dart
     status: pending
@@ -22,13 +22,13 @@ todos:
     status: pending
   - id: integration-tests
     content: integration_test/packages/ – je ein Test pro aktualisiertem/ersetztem Paket
-    status: pending
+    status: completed
   - id: github-workflow
     content: build-apk.yml aus hello_deploy_the_world übernehmen (Flutter 3.44.1, ohne Firebase)
-    status: pending
+    status: completed
   - id: ci-loop
     content: Push → CI-Logs analysieren → fixen bis APK-Build grün ist
-    status: pending
+    status: in_progress
 isProject: false
 ---
 

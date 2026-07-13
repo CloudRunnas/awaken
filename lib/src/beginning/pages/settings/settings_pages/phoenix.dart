@@ -1,11 +1,11 @@
 import 'package:another_flushbar/flushbar.dart';
-import 'package:ionicons/ionicons.dart';
+import 'package:ionicons_plus/ionicons_plus.dart';
 import 'package:phoenix/src/beginning/pages/settings/settings_pages/privacy.dart';
 import 'package:phoenix/src/beginning/utilities/global_variables.dart';
 import 'package:phoenix/src/beginning/widgets/artwork_background.dart';
 import 'package:phoenix/src/beginning/utilities/constants.dart';
 import 'package:flutter/material.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:flutter_material_design_icons/flutter_material_design_icons.dart';
 import 'package:phoenix/src/beginning/utilities/provider/provider.dart';
 import 'package:phoenix/src/beginning/pages/settings/settings_pages/license.dart';
 import 'package:provider/provider.dart';

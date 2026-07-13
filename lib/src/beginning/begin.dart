@@ -24,7 +24,7 @@ import 'package:phoenix/src/beginning/widgets/custom/physics.dart';
 import 'package:phoenix/src/beginning/utilities/audio_handlers/previous_play_skip.dart';
 import 'package:phoenix/src/beginning/utilities/tab_bar.dart';
 import 'package:phoenix/src/beginning/utilities/provider/provider.dart';
-import 'package:ionicons/ionicons.dart';
+import 'package:ionicons_plus/ionicons_plus.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/material.dart';
 import 'package:phoenix/src/beginning/utilities/visualizer_notification.dart';
