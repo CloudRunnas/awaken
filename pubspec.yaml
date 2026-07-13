@@ -36,7 +36,7 @@ dependencies:
 
   # AUDIO Related
   audio_service: ^0.18.17
-  ffmpeg_kit_flutter_new: ^2.0.0
+  ffmpeg_kit_flutter_new: ^4.4.2
   just_audio: ^0.10.4
   on_audio_edit: ^1.4.0+1
   on_audio_query: ^2.9.0
