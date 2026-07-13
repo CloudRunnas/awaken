@@ -4,6 +4,7 @@ import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
 import 'package:lrc/lrc.dart';
 import 'package:phoenix/src/beginning/utilities/global_variables.dart';
+import 'package:phoenix/src/beginning/widgets/lyrics/lyrics_interactive_line.dart';
 import 'package:super_sliver_list/super_sliver_list.dart';
 
 class TextWithFadingProgress extends StatelessWidget {
@@ -402,7 +403,7 @@ class LyricsLRCParsedViewState extends State<LyricsLRCParsedView> {
                       color: widget.textColor.withValues(alpha: opacity),
                     );
 
-                    final textWidget = selected &&
+                    final syncedChild = selected &&
                             parts != null &&
                             parts.isNotEmpty
                         ? TextWithFadingProgress(
@@ -415,34 +416,38 @@ class LyricsLRCParsedViewState extends State<LyricsLRCParsedView> {
                             position: _position,
                             playing: _playing,
                           )
-                        : Text(
-                            text,
-                            style: textStyle,
-                            textAlign: TextAlign.center,
-                          );
+                        : null;
 
-                    return GestureDetector(
-                      onTap: () => _seekToLine(line),
-                      child: AnimatedScale(
-                        scale: selected ? 1.0 : 0.95,
-                        duration: const Duration(milliseconds: 400),
-                        curve: Curves.easeInOutCubicEmphasized,
-                        child: Container(
-                          margin: EdgeInsets.symmetric(
-                            vertical: fullscreen ? 8 : 2,
-                            horizontal: 8,
-                          ),
-                          padding: EdgeInsets.symmetric(
-                            vertical: selectedAndEmpty ? 3 : 8,
-                            horizontal: selectedAndEmpty ? 24 : 8,
-                          ),
-                          decoration: BoxDecoration(
-                            color: selected && !line.isBGLyrics
-                                ? widget.highlightColor
-                                : null,
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: textWidget,
+                    return AnimatedScale(
+                      scale: selected ? 1.0 : 0.95,
+                      duration: const Duration(milliseconds: 400),
+                      curve: Curves.easeInOutCubicEmphasized,
+                      child: Container(
+                        margin: EdgeInsets.symmetric(
+                          vertical: fullscreen ? 8 : 2,
+                          horizontal: 8,
+                        ),
+                        padding: EdgeInsets.symmetric(
+                          vertical: selectedAndEmpty ? 3 : 8,
+                          horizontal: selectedAndEmpty ? 24 : 8,
+                        ),
+                        decoration: BoxDecoration(
+                          color: selected && !line.isBGLyrics
+                              ? widget.highlightColor
+                              : null,
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: LyricsInteractiveLine(
+                          line: line,
+                          text: text,
+                          textStyle: textStyle,
+                          textAlign: TextAlign.center,
+                          textDirection: line.isRTL
+                              ? TextDirection.rtl
+                              : TextDirection.ltr,
+                          selected: selected,
+                          syncedChild: syncedChild,
+                          onSeek: () => _seekToLine(line),
                         ),
                       ),
                     );

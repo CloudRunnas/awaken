@@ -1,6 +1,11 @@
 name: Deploy DeepL Proxy
 
 on:
+  push:
+    branches: [main]
+    paths:
+      - 'infra/deepl-proxy/**'
+      - '.github/workflows/deploy-deepl-proxy.yml'
   workflow_dispatch:
   pull_request:
     types: [closed]
@@ -15,10 +20,11 @@ concurrency:
 
 jobs:
   deploy:
-    if: github.event_name == 'workflow_dispatch' || github.event.pull_request.merged == true
+    if: github.event_name == 'workflow_dispatch' || github.event_name == 'push' || github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     permissions:
       contents: read
+      actions: write
     steps:
       - uses: actions/checkout@v4
 

@@ -4,6 +4,7 @@ import 'dart:typed_data';
 import 'package:another_flushbar/flushbar.dart';
 import 'package:flutter/services.dart';
 import 'package:phoenix/src/beginning/pages/settings/settings_pages/glass_effect.dart';
+import 'package:phoenix/src/beginning/utilities/translation/deepl_languages.dart';
 import 'package:phoenix/src/beginning/utilities/global_variables.dart';
 import 'package:phoenix/src/beginning/widgets/artwork_background.dart';
 import 'package:phoenix/src/beginning/utilities/constants.dart';
@@ -252,6 +253,49 @@ class _InterfaceState extends State<Interface> {
                             });
                           },
                           controlAffinity: ListTileControlAffinity.leading,
+                        ),
+                      ),
+                      Material(
+                        color: Colors.transparent,
+                        child: ListTile(
+                          title: const Text(
+                            "Übersetzungs-Sprache",
+                            style: TextStyle(color: Colors.white),
+                          ),
+                          subtitle: const Text(
+                            "Zielsprache für Lyrics (Tap=Wort, Doppel-Tap=Vers, Long-Press=Springen).",
+                            style: TextStyle(color: Colors.white38),
+                          ),
+                          trailing: DropdownButton<String>(
+                            dropdownColor: kMaterialBlack,
+                            value: kDeeplTargetLanguages.any((l) =>
+                                    l.code ==
+                                    (musicBox.get('translationTargetLang')
+                                        as String?))
+                                ? musicBox.get('translationTargetLang')
+                                    as String?
+                                : 'DE',
+                            items: kDeeplTargetLanguages
+                                .map(
+                                  (lang) => DropdownMenuItem(
+                                    value: lang.code,
+                                    child: Text(
+                                      '${lang.flag} ${lang.name}',
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                        fontFamily: 'Raleway',
+                                      ),
+                                    ),
+                                  ),
+                                )
+                                .toList(),
+                            onChanged: (code) {
+                              if (code == null) return;
+                              setState(() {
+                                musicBox.put('translationTargetLang', code);
+                              });
+                            },
+                          ),
                         ),
                       ),
                       Material(
