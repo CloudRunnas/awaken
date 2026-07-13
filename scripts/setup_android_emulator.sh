@@ -24,4 +24,13 @@ echo no | avdmanager create avd \
   -k "system-images;android-34;google_apis;x86_64" \
   -d "pixel_6"
 
+AVD_DIR="$HOME/.android/avd/${AVD_NAME}.avd"
+if [[ -f "$AVD_DIR/config.ini" ]]; then
+  # Smaller RAM + no snapshots = faster cold boots on hosts without KVM.
+  sed -i 's/^hw.ramSize=.*/hw.ramSize=1536/' "$AVD_DIR/config.ini" 2>/dev/null || true
+  grep -q '^hw.ramSize=' "$AVD_DIR/config.ini" || echo 'hw.ramSize=1536' >> "$AVD_DIR/config.ini"
+  sed -i 's/^snapshot.present=.*/snapshot.present=no/' "$AVD_DIR/config.ini" 2>/dev/null || true
+  grep -q '^snapshot.present=' "$AVD_DIR/config.ini" || echo 'snapshot.present=no' >> "$AVD_DIR/config.ini"
+fi
+
 echo "AVD '${AVD_NAME}' ready."

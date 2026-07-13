@@ -1,6 +1,7 @@
 # Miscellaneous
 *.class
 *.log
+integration_test_run.log
 *.pyc
 *.swp
 .DS_Store
