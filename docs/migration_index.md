@@ -21,6 +21,7 @@ Dieses Index listet alle Migrations-Dokumente und ordnet **jeden Git-Diff-Hunk**
 | [migration_ffmpeg_kit_flutter_new.md](migration_ffmpeg_kit_flutter_new.md) | ffmpeg_kit_flutter_new | flutter_ffmpeg ^0.4.2 → ^2.0.0 |
 | [migration_just_audio.md](migration_just_audio.md) | just_audio | ^0.9.28 → ^0.10.4 |
 | [migration_on_audio_query.md](migration_on_audio_query.md) | on_audio_query | 2.6.1 → ^2.9.0 |
+| [migration_on_audio_edit.md](migration_on_audio_edit.md) | on_audio_edit | ^1.4.0+1 (CI-Patch für 1.5.1 Kotlin) |
 | [migration_device_info_plus.md](migration_device_info_plus.md) | device_info_plus | device_info ^2.0.3 → ^11.3.0 |
 | [migration_image_picker.md](migration_image_picker.md) | image_picker | ^0.8.5+3 → ^1.1.2 |
 | [migration_path_provider.md](migration_path_provider.md) | path_provider | ^2.0.11 → ^2.1.5 |
@@ -104,7 +105,8 @@ Dieses Index listet alle Migrations-Dokumente und ordnet **jeden Git-Diff-Hunk**
 | Datei | Hunk (Inhalt) | Dokument |
 |-------|---------------|----------|
 | `android/app/build.gradle` | Datei gelöscht | [migration_sdk_android.md](migration_sdk_android.md) |
-| `android/app/build.gradle.kts` | Datei neu (Kotlin-DSL) | [migration_sdk_android.md](migration_sdk_android.md) |
+| `android/build.gradle.kts` | `compileSdk` ≥ 34 für Legacy-Plugins | [migration_flutter_displaymode.md](migration_flutter_displaymode.md) |
+| `android/app/build.gradle.kts` | `isMinifyEnabled = false` (R8 Play-Core) | [migration_sdk_android.md](migration_sdk_android.md) |
 | `android/build.gradle` | Datei gelöscht | [migration_sdk_android.md](migration_sdk_android.md) |
 | `android/build.gradle` | `flutterFFmpegPackage` entfernt | [migration_ffmpeg_kit_flutter_new.md](migration_ffmpeg_kit_flutter_new.md) |
 | `android/build.gradle.kts` | Datei neu | [migration_sdk_android.md](migration_sdk_android.md) |
@@ -118,6 +120,15 @@ Dieses Index listet alle Migrations-Dokumente und ordnet **jeden Git-Diff-Hunk**
 | `android/app/src/main/AndroidManifest.xml` | `FOREGROUND_SERVICE_MEDIA_PLAYBACK` (neu) | [migration_audio_service.md](migration_audio_service.md) |
 | `android/app/src/main/AndroidManifest.xml` | `POST_NOTIFICATIONS` (neu) | [migration_awesome_notifications.md](migration_awesome_notifications.md) |
 | `android/app/src/main/AndroidManifest.xml` | `AudioService` + `foregroundServiceType` | [migration_audio_service.md](migration_audio_service.md) |
+
+### `scripts/` und CI
+
+| Datei | Hunk (Inhalt) | Dokument |
+|-------|---------------|----------|
+| `scripts/patch_android_namespaces.sh` | Namespace-Patch für Legacy-Plugins | [migration_sdk_android.md](migration_sdk_android.md) |
+| `scripts/patch_on_audio_edit_kotlin.sh` | Kotlin-Fixes für on_audio_edit 1.5.1 | [migration_on_audio_edit.md](migration_on_audio_edit.md) |
+| `.github/workflows/build-apk.yml` | Flutter 3.44.1 APK-Build-Pipeline | [migration_sdk_android.md](migration_sdk_android.md) |
+| `.github/workflows/build-apk.yml` | `patch_on_audio_edit_kotlin.sh` Schritt | [migration_on_audio_edit.md](migration_on_audio_edit.md) |
 
 ### Nicht zugeordnet (automatisch generiert / außerhalb Scope)
 
@@ -137,7 +148,7 @@ Folgende Pakete haben Integrations-Tests, aber **keine Versionsänderung** in `p
 | flutter_remixicon | `migration_flutter_remixicon_test.dart` |
 | hive_flutter | `migration_hive_flutter_test.dart` |
 | html_unescape | `migration_html_unescape_test.dart` |
-| on_audio_edit | `migration_on_audio_edit_test.dart` |
+| `on_audio_edit` | `migration_on_audio_edit_test.dart` | [migration_on_audio_edit.md](migration_on_audio_edit.md) |
 | sliding_up_panel | `migration_sliding_up_panel_test.dart` |
 
 Diese Pakete wurden nur zur Kompatibilitätsvalidierung getestet; siehe jeweiliges Test-File.

@@ -39,6 +39,10 @@ subprojects {
                     ?: project.group.toString().takeIf { it.isNotBlank() }
                     ?: "com.phoenix.${project.name.replace('-', '_')}"
             }
+            // Legacy plugins (e.g. flutter_displaymode 0.6.0) pin compileSdk 33.
+            if (compileSdk == null || compileSdk!! < 34) {
+                compileSdk = 34
+            }
             compileOptions {
                 sourceCompatibility = JavaVersion.VERSION_17
                 targetCompatibility = JavaVersion.VERSION_17
