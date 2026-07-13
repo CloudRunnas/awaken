@@ -1,0 +1,67 @@
+{
+  "project_info": {
+    "project_number": "271519645394",
+    "project_id": "ml-ciops",
+    "storage_bucket": "ml-ciops.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:271519645394:android:e5c63e435db14df04d370b",
+        "android_client_info": {
+          "package_name": "com.Phoenix.project"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAtPnlcC7IXRKCfUaxOpQWlvkDOt57Pxug"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:271519645394:android:fc776c15aaf955974d370b",
+        "android_client_info": {
+          "package_name": "com.example.hello_deploy_the_world"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAtPnlcC7IXRKCfUaxOpQWlvkDOt57Pxug"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:271519645394:android:3243647fc4c23feb4d370b",
+        "android_client_info": {
+          "package_name": "com.msob7y.namida"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAtPnlcC7IXRKCfUaxOpQWlvkDOt57Pxug"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

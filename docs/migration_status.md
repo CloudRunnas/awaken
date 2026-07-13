@@ -95,7 +95,7 @@ Diese Skripte patchen Legacy-Plugins im Pub-Cache **vor** `flutter build apk`:
 flutter pub get
 → patch_android_namespaces.sh
 → patch_on_audio_edit_kotlin.sh
-→ patch_flutter_displaymode.sh
+→ patch_legacy_compile_sdk.sh
 → flutter analyze --no-fatal-infos --no-fatal-warnings
 → flutter build apk --release
 → upload-artifact: release-apk
