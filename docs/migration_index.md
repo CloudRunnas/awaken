@@ -127,6 +127,7 @@ Dieses Index listet alle Migrations-Dokumente und ordnet **jeden Git-Diff-Hunk**
 |-------|---------------|----------|
 | `scripts/patch_android_namespaces.sh` | Namespace-Patch für Legacy-Plugins | [migration_sdk_android.md](migration_sdk_android.md) |
 | `scripts/patch_on_audio_edit_kotlin.sh` | Kotlin-Fixes für on_audio_edit 1.5.1 | [migration_on_audio_edit.md](migration_on_audio_edit.md) |
+| `scripts/patch_flutter_displaymode.sh` | compileSdk 33 → 34 in Plugin | [migration_flutter_displaymode.md](migration_flutter_displaymode.md) |
 | `.github/workflows/build-apk.yml` | Flutter 3.44.1 APK-Build-Pipeline | [migration_sdk_android.md](migration_sdk_android.md) |
 | `.github/workflows/build-apk.yml` | `patch_on_audio_edit_kotlin.sh` Schritt | [migration_on_audio_edit.md](migration_on_audio_edit.md) |
 
