@@ -131,14 +131,29 @@ if [[ -z "$FUNCTION_URL" || "$FUNCTION_URL" == "None" ]]; then
     --region "$AWS_REGION" \
     --query FunctionUrl \
     --output text)"
+else
+  aws lambda update-function-url-config \
+    --function-name "$FUNCTION_NAME" \
+    --auth-type NONE \
+    --cors "AllowOrigins=*,AllowMethods=POST,AllowHeaders=content-type,x-phoenix-api-key" \
+    --region "$AWS_REGION" >/dev/null
 fi
 
+echo "Ensuring public Function URL permissions..."
 aws lambda add-permission \
   --function-name "$FUNCTION_NAME" \
   --statement-id FunctionURLAllowPublicAccess \
   --action lambda:InvokeFunctionUrl \
   --principal "*" \
   --function-url-auth-type NONE \
+  --region "$AWS_REGION" >/dev/null 2>&1 || true
+
+aws lambda add-permission \
+  --function-name "$FUNCTION_NAME" \
+  --statement-id FunctionURLAllowInvokeFunction \
+  --action lambda:InvokeFunction \
+  --principal "*" \
+  --invoked-via-function-url \
   --region "$AWS_REGION" >/dev/null 2>&1 || true
 
 echo "$FUNCTION_URL" > "${ROOT_DIR}/.function_url"

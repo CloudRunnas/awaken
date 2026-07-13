@@ -64,7 +64,15 @@ jobs:
         env:
           PHOENIX_TRANSLATION_API_KEY: ${{ secrets.PHOENIX_TRANSLATION_API_KEY }}
         run: |
-          curl -fsS -X POST "$DEEPL_PROXY_URL" \
+          response=$(curl -sS -w "\nHTTP_STATUS:%{http_code}" -X POST "$DEEPL_PROXY_URL" \
             -H "Content-Type: application/json" \
             -H "X-Phoenix-Api-Key: $PHOENIX_TRANSLATION_API_KEY" \
-            -d '{"text":"Hello","target_lang":"DE"}'
+            -d '{"text":"Hello","target_lang":"DE"}')
+          echo "$response"
+          status="${response##*HTTP_STATUS:}"
+          body="${response%HTTP_STATUS:*}"
+          if [[ "$status" != "200" ]]; then
+            echo "Smoke test failed with HTTP $status"
+            exit 1
+          fi
+          echo "$body" | grep -q '"translations"' || (echo "Missing translations in response" && exit 1)
