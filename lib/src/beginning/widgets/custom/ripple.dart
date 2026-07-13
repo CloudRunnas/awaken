@@ -171,14 +171,14 @@ class CustomRipple extends InteractiveInkFeature {
       canvas.save();
       canvas.transform(transform.storage);
       if (_clipCallback != null) {
-        _clipCanvasWithRect(canvas, _clipCallback!());
+        _clipCanvasWithRect(canvas, _clipCallback());
       }
       canvas.drawCircle(center!, _radius.value, paint);
       canvas.restore();
     } else {
       if (_clipCallback != null) {
         canvas.save();
-        _clipCanvasWithRect(canvas, _clipCallback!(), offset: originOffset);
+        _clipCanvasWithRect(canvas, _clipCallback(), offset: originOffset);
       }
       canvas.drawCircle(center! + originOffset, _radius.value, paint);
       if (_clipCallback != null) canvas.restore();

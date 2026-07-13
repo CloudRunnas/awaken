@@ -233,8 +233,6 @@ class AudioPlayerTask extends BaseAudioHandler {
         return AudioProcessingState.ready;
       case ProcessingState.completed:
         return AudioProcessingState.completed;
-      default:
-        throw Exception("Invalid state: ${_audioPlayer.processingState}");
     }
   }
 }

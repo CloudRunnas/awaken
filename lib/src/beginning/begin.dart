@@ -31,7 +31,6 @@ import 'package:phoenix/src/beginning/utilities/visualizer_notification.dart';
 import 'dart:async';
 import 'package:provider/provider.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
-import 'pages/albums/albums.dart';
 import 'package:flutter_remixicon/flutter_remixicon.dart';
 
 class Begin extends StatefulWidget {
