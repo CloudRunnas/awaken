@@ -27,9 +27,11 @@ jobs:
       - run: bash scripts/patch_on_audio_edit_kotlin.sh
       - run: bash scripts/patch_legacy_compile_sdk.sh
       - run: flutter analyze --no-fatal-infos --no-fatal-warnings
-      - run: flutter build apk --release --split-per-abi --build-number=${{ github.run_number }} \
-          --dart-define=DEEPL_PROXY_URL=${{ vars.DEEPL_PROXY_URL }} \
-          --dart-define=PHOENIX_TRANSLATION_API_KEY=${{ secrets.PHOENIX_TRANSLATION_API_KEY }}
+      - name: Build release APK
+        run: |
+          flutter build apk --release --split-per-abi --build-number=${{ github.run_number }} \
+            --dart-define=DEEPL_PROXY_URL=${{ vars.DEEPL_PROXY_URL }} \
+            --dart-define=PHOENIX_TRANSLATION_API_KEY=${{ secrets.PHOENIX_TRANSLATION_API_KEY }}
 
       - uses: actions/upload-artifact@v4
         with:
