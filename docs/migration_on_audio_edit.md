@@ -22,7 +22,7 @@ on_audio_edit: ^1.4.0+1
 
 `pub get` löst auf `1.5.1` auf — letzte veröffentlichte Version.
 
-### 2. CI-Patch-Script (neu)
+### 2. CI-Patch-Scripts (neu)
 
 **Datei:** `scripts/patch_on_audio_edit_kotlin.sh`
 
@@ -32,10 +32,17 @@ on_audio_edit: ^1.4.0+1
 | `OnAudioEdit10.kt` Zeile `val pUri: Uri` | → `var pUri: Uri` (Captured-value-Initialisierung in Coroutine) |
 | `OnArtworkEdit10.kt` Zeile `val pUri: Uri` | → `var pUri: Uri` (gleicher Fix) |
 
-**Ausführung in CI:** `.github/workflows/build-apk.yml` — Schritt nach `patch_android_namespaces.sh`:
+**Datei:** `scripts/patch_legacy_compile_sdk.sh`
+
+| Plugin | Alt | Neu | Zweck |
+|--------|-----|-----|-------|
+| `on_audio_edit` 1.5.1 | `compileSdkVersion 30` | `34` | AGP 9: `checkReleaseAarMetadata` verlangt compileSdk ≥ 34 |
+| `on_audio_query_android` 1.1.0 | `compileSdkVersion 33` | `34` | AndroidX-Dependencies verlangen compileSdk ≥ 34 |
+
+**Ausführung in CI:** `.github/workflows/build-apk.yml` — nach `patch_on_audio_edit_kotlin.sh`:
 
 ```yaml
-- run: bash scripts/patch_on_audio_edit_kotlin.sh
+- run: bash scripts/patch_legacy_compile_sdk.sh
 ```
 
 ### 3. Kotlin-Version (Android-Toolchain)
