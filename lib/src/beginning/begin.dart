@@ -2,6 +2,7 @@
 
 import 'package:another_flushbar/flushbar.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_displaymode/flutter_displaymode.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:phoenix/src/beginning/pages/albums/albums.dart';
@@ -125,8 +126,14 @@ class _BeginState extends State<Begin>
 
     return Scaffold(
       extendBodyBehindAppBar: true,
-      body: WillPopScope(
-        onWillPop: _onWillPop,
+      body: PopScope(
+        canPop: false,
+        onPopInvokedWithResult: (bool didPop, Object? result) async {
+          if (didPop) return;
+          if (await _onWillPop()) {
+            SystemNavigator.pop();
+          }
+        },
         child: SlidingUpPanel(
           parallaxEnabled: true,
           isDraggable: true,

@@ -36,7 +36,7 @@ onDoubleTap(BuildContext context) async {
     Flushbar(
       messageText: const Text("Added To Liked Songs",
           style: TextStyle(fontFamily: "Futura", color: Colors.white)),
-      icon: const Icon(
+      icon: Icon(
         MdiIcons.heart,
         size: 28.0,
         color: Color(0xFFCB0447),

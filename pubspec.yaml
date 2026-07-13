@@ -17,7 +17,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 2.4.0+14
 
 environment:
-  sdk: '>=2.12.0 <3.0.0'
+  sdk: '>=3.5.0 <4.0.0'
 
 dependencies:
   flutter:
@@ -25,34 +25,33 @@ dependencies:
 
 
   # UI Related
-  another_flushbar: ^1.10.29
+  another_flushbar: ^1.12.30
   another_xlider: ^1.1.2
   animated_text_kit: ^4.2.2
   flare_flutter: ^3.0.2
   flare_loading: ^3.0.0
-  page_transition: ^2.0.9
-  palette_generator: ^0.3.3+1
-  sleek_circular_slider: ^2.0.1
+  page_transition: ^2.2.1
+  palette_generator: ^0.3.3+5
+  sleek_circular_slider: ^2.1.0
   sliding_up_panel: ^2.0.0+1
 
 
   # AUDIO Related
-  audio_service: ^0.18.7
-  flutter_ffmpeg: ^0.4.2
-  just_audio: ^0.9.28
+  audio_service: ^0.18.17
+  ffmpeg_kit_flutter_new: ^2.0.0
+  just_audio: ^0.10.4
   on_audio_edit: ^1.4.0+1
-  on_audio_query: '2.6.1'
+  on_audio_query: ^2.9.0
 
 
   # FLUTTER Related
-  device_info: ^2.0.3
-  # flutter_isolate: ^2.0.1-pre
-  image_picker: ^0.8.5+3
-  path_provider: ^2.0.11
-  permission_handler: ^10.0.0
-  provider: ^6.0.3
-  share_plus: ^4.0.10+1
-  flutter_displaymode: ^0.4.0
+  device_info_plus: ^11.3.0
+  image_picker: ^1.1.2
+  path_provider: ^2.1.5
+  permission_handler: ^11.4.0
+  provider: ^6.1.4
+  share_plus: ^10.1.4
+  flutter_displaymode: ^0.6.0
 
 
   # DATABASE Related
@@ -61,36 +60,33 @@ dependencies:
 
 
   # ICONS Related
-  cupertino_icons: ^1.0.5
-  flutter_launcher_icons: ^0.10.0
+  cupertino_icons: ^1.0.8
+  flutter_launcher_icons: ^0.14.3
   flutter_remixicon:
     git: https://github.com/KarimAbdo/flutter_remixicon.git
-  ionicons: ^0.2.1
-  material_design_icons_flutter: ^5.0.6996
+  ionicons: ^0.2.2
+  material_design_icons_flutter: ^7.0.7296
 
 
   # WEB Related
-  http: ^0.13.5
-  html: ^0.15.0
+  http: ^1.4.0
+  html: ^0.15.5
   html_unescape: ^2.0.0
-  url_launcher: ^6.1.5
+  url_launcher: ^6.3.1
 
 
   # MISCELLANEOUS
-  awesome_notifications: ^0.6.21
-  screenshot: ^1.2.3
+  awesome_notifications: ^0.10.1
+  screenshot: ^3.0.0
 
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  integration_test:
+    sdk: flutter
 
-  # The "flutter_lints" package below contains a set of recommended lints to
-  # encourage good coding practices. The lint set provided by the package is
-  # activated in the `analysis_options.yaml` file located at the root of your
-  # package. See that file for information about deactivating specific lint
-  # rules and activating additional ones.
-  flutter_lints: ^2.0.1
+  flutter_lints: ^5.0.0
 
 
 # For information on the generic Dart part of this file, see the
@@ -100,26 +96,10 @@ dev_dependencies:
 
 flutter:
 
-  # The following line ensures that the Material Icons font is
-  # included with your application, so that you can use the icons in
-  # the material Icons class.
   uses-material-design: true
 
-  # To add assets to your application, add an assets section, like this:
   assets:
     - assets/res/
-
-  # An image asset can refer to one or more resolution-specific "variants", see
-  # https://flutter.dev/assets-and-images/#resolution-aware.
-
-  # For details regarding adding assets from package dependencies, see
-  # https://flutter.dev/assets-and-images/#from-packages
-
-  # To add custom fonts to your application, add a fonts section here,
-  # in this "flutter" section. Each entry in this list should have a
-  # "family" key with the font family name, and a "fonts" key with a
-  # list giving the asset and other descriptors for the font. For
-  # example:
 
   fonts:
     - family: NightMachine
@@ -128,7 +108,7 @@ flutter:
 
     - family: Urban
       fonts:
-        - asset: assets/fonts/Urbanist-Regular.otf    
+        - asset: assets/fonts/Urbanist-Regular.otf
         - asset: assets/fonts/Urbanist-Light.otf
           weight: 300
         - asset: assets/fonts/Urbanist-SemiBold.otf
@@ -152,11 +132,6 @@ flutter:
       fonts:
         - asset: assets/fonts/FuturaLT.ttf
 
-    - family:  Graviticons
+    - family: Graviticons
       fonts:
         - asset: assets/fonts/Graviticons.ttf
-        
-        
-  #
-  # For details regarding fonts from package dependencies,
-  # see https://flutter.dev/custom-fonts/#from-packages

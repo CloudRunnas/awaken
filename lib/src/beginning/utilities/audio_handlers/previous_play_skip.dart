@@ -8,7 +8,7 @@ import 'package:phoenix/src/beginning/pages/genres/genres.dart';
 import 'package:phoenix/src/beginning/pages/genres/genres_inside.dart';
 import 'package:phoenix/src/beginning/pages/playlist/playlist_inside.dart';
 import 'package:phoenix/src/beginning/utilities/audio_handlers/artwork.dart';
-import 'package:phoenix/src/beginning/utilities/screenshot_ui.dart';
+import 'package:phoenix/src/beginning/utilities/screenshot_UI.dart';
 import '../page_backend/mansion_back.dart';
 import 'package:phoenix/src/beginning/utilities/scraping/lyrics_scrape.dart';
 import '../filters.dart';

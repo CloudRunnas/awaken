@@ -168,13 +168,13 @@ class _AddSongsState extends State<AddSongs> {
                                     color: Colors.grey[350],
                                   ),
                                   hintText: widget.playlistName,
-                                  prefixIcon: const Icon(
+                                  prefixIcon: Icon(
                                       MdiIcons.playlistMusicOutline,
                                       color: Colors.white),
                                   suffixIcon: Visibility(
                                     visible: widget.modify,
                                     child: IconButton(
-                                      icon: const Icon(Ionicons.trash_outline,
+                                      icon: Icon(Ionicons.trash_outline,
                                           color: Color(0xFFCB0047)),
                                       onPressed: () async {
                                         await removePlaylists(

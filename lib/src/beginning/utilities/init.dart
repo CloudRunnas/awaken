@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'dart:ui';
 import 'package:audio_service/audio_service.dart';
-import 'package:device_info/device_info.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -49,8 +49,18 @@ dataInit() async {
   glassShadowOpacity = musicBox.get("glassShadow") ?? 6;
 }
 
+Future<bool> requestMusicLibraryPermission() async {
+  if (Platform.isAndroid) {
+    final sdkInt = (await DeviceInfoPlugin().androidInfo).version.sdkInt;
+    if (sdkInt >= 33) {
+      return await Permission.audio.request().isGranted;
+    }
+  }
+  return await Permission.storage.request().isGranted;
+}
+
 fetchSongs() async {
-  if (await Permission.storage.request().isGranted) {
+  if (await requestMusicLibraryPermission()) {
     List songSortTypes = [
       SongSortType.TITLE,
       SongSortType.DATE_ADDED,

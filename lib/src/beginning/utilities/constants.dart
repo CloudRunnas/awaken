@@ -58,6 +58,7 @@ Map<String, String> changelogs = {
 
 /// Theme data of entire app
 ThemeData themeOfApp = ThemeData(
+  useMaterial3: false,
   splashFactory: CustomRipple.splashFactory,
   unselectedWidgetColor: Colors.grey[900],
   scaffoldBackgroundColor: kMaterialBlack,
@@ -69,11 +70,11 @@ ThemeData themeOfApp = ThemeData(
       builders: {TargetPlatform.android: OpenUpwardsPageTransitionsBuilder()}),
   scrollbarTheme: ScrollbarThemeData(
     interactive: true,
-    thumbVisibility: MaterialStateProperty.all(false),
+    thumbVisibility: WidgetStateProperty.all(false),
     radius: const Radius.circular(50),
-    thickness: MaterialStateProperty.all(4),
+    thickness: WidgetStateProperty.all(4),
     crossAxisMargin: 2,
-    thumbColor: MaterialStateProperty.all(Colors.white30),
+    thumbColor: WidgetStateProperty.all(Colors.white30),
   ),
   colorScheme: ColorScheme.fromSwatch().copyWith(secondary: Colors.white),
 );

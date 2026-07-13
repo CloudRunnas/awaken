@@ -21,8 +21,9 @@ import 'package:phoenix/src/beginning/pages/genres/genres_inside.dart';
 import '../../utilities/page_backend/mansion_back.dart';
 import 'package:phoenix/src/beginning/pages/playlist/playlist_inside.dart';
 import 'package:phoenix/src/beginning/utilities/audio_handlers/previous_play_skip.dart';
-import 'package:phoenix/src/beginning/utilities/screenshot_ui.dart';
+import 'package:phoenix/src/beginning/utilities/screenshot_UI.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:phoenix/src/beginning/utilities/init.dart';
 import '../../utilities/constants.dart';
 
 class OnHold extends StatefulWidget {
@@ -268,12 +269,12 @@ class _OnHoldState extends State<OnHold> {
                                                     );
                                                   }
                                                 } else if (i == 3) {
-                                                  await Share.shareFiles(
+                                                  await Share.shareXFiles(
                                                     [
-                                                      widget
+                                                      XFile(widget
                                                           .listOfSong![
                                                               widget.index]
-                                                          .data
+                                                          .data),
                                                     ],
                                                   );
                                                 } else if (i == 4) {
@@ -399,9 +400,8 @@ class _OnHoldState extends State<OnHold> {
                                                     Navigator.pop(context);
                                                     androidRSupport(context);
                                                   } else {
-                                                    if (await Permission.storage
-                                                        .request()
-                                                        .isGranted) {
+                                                    if (await
+                                                        requestMusicLibraryPermission()) {
                                                       await deleteAFile(widget
                                                           .listOfSong![
                                                               widget.index]
@@ -580,9 +580,10 @@ class _OnHoldExtendedState extends State<OnHoldExtended> {
                                                       (await getExternalStorageDirectory())!;
                                                   String appDocPath =
                                                       appDocDir.path;
-                                                  await Share.shareFiles(
+                                                  await Share.shareXFiles(
                                                     [
-                                                      '$appDocPath/legendary-er.png'
+                                                      XFile(
+                                                          '$appDocPath/legendary-er.png'),
                                                     ],
                                                   );
                                                 } else if (i == 1) {
@@ -646,7 +647,7 @@ class _OnHoldExtendedState extends State<OnHoldExtended> {
                                                                   "Futura",
                                                               color: Colors
                                                                   .white)),
-                                                      icon: const Icon(
+                                                      icon: Icon(
                                                         MdiIcons.heart,
                                                         size: 28.0,
                                                         color:
@@ -756,8 +757,8 @@ class _OnHoldExtendedState extends State<OnHoldExtended> {
                                                     );
                                                   }
                                                 } else if (i == 3) {
-                                                  await Share.shareFiles(
-                                                    [nowMediaItem.id],
+                                                  await Share.shareXFiles(
+                                                    [XFile(nowMediaItem.id)],
                                                   );
                                                 }
 
@@ -868,9 +869,8 @@ class _OnHoldExtendedState extends State<OnHoldExtended> {
                                                   );
                                                 } else if (i == 6) {
                                                   // Save Wallpaper
-                                                  if (await Permission.storage
-                                                          .request()
-                                                          .isGranted
+                                                  if (await
+                                                      requestMusicLibraryPermission()
                                                       //     &&
                                                       // await Permission
                                                       //     .manageExternalStorage
@@ -935,9 +935,8 @@ class _OnHoldExtendedState extends State<OnHoldExtended> {
                                                     Navigator.pop(context);
                                                     androidRSupport(context);
                                                   } else {
-                                                    if (await Permission.storage
-                                                        .request()
-                                                        .isGranted) {
+                                                    if (await
+                                                        requestMusicLibraryPermission()) {
                                                       await deleteAFile(
                                                           songList[indexOfList]
                                                               .data);

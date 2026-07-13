@@ -8,11 +8,7 @@ class AudioPlayerTask extends BaseAudioHandler {
     _init();
   }
   List<MediaItem> leQueue = [];
-  final AudioPlayer _audioPlayer = AudioPlayer(
-    handleInterruptions: true,
-    androidApplyAudioAttributes: true,
-    handleAudioSessionActivation: true,
-  );
+  final AudioPlayer _audioPlayer = AudioPlayer();
   int indexOfQueue = 0;
   int addToQueueIndex = -1;
   AudioProcessingState? _skipState;

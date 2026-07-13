@@ -4,7 +4,7 @@ overview: Phoenix-Projekt (Flutter 2 / Dart 2.x) in das leere Repo CloudRunnas/a
 todos:
   - id: clone-push
     content: Phoenix master in awaken klonen, mit LICENSE mergen, initial pushen
-    status: pending
+    status: in_progress
   - id: android-toolchain
     content: Android Gradle/AGP/Kotlin auf Flutter 3.44.1-Standard migrieren (compileSdk 35)
     status: pending

@@ -163,8 +163,12 @@ class _DirectoriesState extends State<Directories> {
       ),
       body: Theme(
         data: themeOfApp,
-        child: WillPopScope(
-          onWillPop: _onWillPop,
+        child: PopScope(
+          canPop: false,
+          onPopInvokedWithResult: (bool didPop, Object? result) async {
+            if (didPop) return;
+            await _onWillPop();
+          },
           child: Container(
             color: kMaterialBlack,
             padding: const EdgeInsets.only(

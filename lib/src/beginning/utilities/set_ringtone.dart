@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:phoenix/src/beginning/utilities/file_handlers.dart';
 import 'package:phoenix/src/beginning/utilities/global_variables.dart';
 import 'native/go_native.dart';
-import 'package:flutter_ffmpeg/flutter_ffmpeg.dart';
+import 'package:ffmpeg_kit_flutter_new/ffmpeg_kit.dart';
 
 Future<void> ringtoneTrim(
     {required pathOfFile,
@@ -21,23 +21,21 @@ Future<void> ringtoneTrim(
   final String length = (Duration(milliseconds: ranges[1] ~/ 1) -
           Duration(milliseconds: ranges[0] ~/ 1))
       .toString();
-  final FlutterFFmpeg flutterFFmpeg = FlutterFFmpeg();
   final String finalFile = await duplicateFile(
       "/storage/emulated/0/Music/$title$ext".replaceAll(" ", "-"));
   await File(pathOfFile).copy("${applicationFileDirectory.path}/raw$ext");
-  await flutterFFmpeg
-      .execute("-ss $start -i $inputFile -t $length -c copy $outputFile")
-      .then((rc) => debugPrint("FFmpeg process 1 exited with rc $rc"));
+  await FFmpegKit.execute(
+      "-ss $start -i $inputFile -t $length -c copy $outputFile");
+  debugPrint("FFmpeg process 1 completed");
   if (fade != 0) {
     // afade(fade in) works only in flac files in ffmpeg by default. Doing it for other formats
     // will need additional packages. So inorder to keep the app size small I am converting
     // non-flac files to flac to apply crossfade.
     try {
       if (ext.contains(".flac")) {
-        await flutterFFmpeg
-            .execute(
-                '-i $outputFile -af "afade=t=in:st=0:d=$fade" $outputFileFade')
-            .then((rc) => debugPrint("FFmpeg process 2 exited with rc $rc"));
+        await FFmpegKit.execute(
+            '-i $outputFile -af "afade=t=in:st=0:d=$fade" $outputFileFade');
+        debugPrint("FFmpeg process 2 completed");
         await File(outputFileFade).copy(finalFile);
         await broadcastFileChange(finalFile);
         await setRingtone(finalFile);
@@ -51,13 +49,11 @@ Future<void> ringtoneTrim(
                 .replaceAll(" ", "-");
         final String finalConvertFile = await duplicateFile(
             "/storage/emulated/0/Music/$title.flac".replaceAll(" ", "-"));
-        await flutterFFmpeg
-            .execute('-i $outputFile -f flac $convertFile')
-            .then((rc) => debugPrint("FFmpeg process 3 exited with rc $rc"));
-        await flutterFFmpeg
-            .execute(
-                '-i $convertFile -af "afade=t=in:st=0:d=$fade" $convertFileFade')
-            .then((rc) => debugPrint("FFmpeg process 2 exited with rc $rc"));
+        await FFmpegKit.execute('-i $outputFile -f flac $convertFile');
+        debugPrint("FFmpeg process 3 completed");
+        await FFmpegKit.execute(
+            '-i $convertFile -af "afade=t=in:st=0:d=$fade" $convertFileFade');
+        debugPrint("FFmpeg process 2 completed");
         await File(convertFileFade).copy(finalConvertFile);
         await broadcastFileChange(finalConvertFile);
         await setRingtone(finalConvertFile);

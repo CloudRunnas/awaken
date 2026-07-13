@@ -26,7 +26,6 @@ import 'package:provider/provider.dart';
 import 'src/beginning/begin.dart';
 
 void main() async {
-  Paint.enableDithering = true;
   WidgetsFlutterBinding.ensureInitialized();
   await cacheImages();
   await dataInit();
