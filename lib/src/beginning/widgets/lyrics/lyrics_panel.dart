@@ -3,7 +3,6 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:lrc/lrc.dart';
 import 'package:page_transition/page_transition.dart';
-import 'package:phoenix/src/beginning/utilities/constants.dart';
 import 'package:phoenix/src/beginning/utilities/global_variables.dart';
 import 'package:phoenix/src/beginning/utilities/lyrics/lyrics_controller.dart';
 import 'package:phoenix/src/beginning/utilities/lyrics/lyrics_state.dart';
@@ -27,13 +26,25 @@ class LyricsPanel extends StatelessWidget {
   });
 
   Color _textColor() {
-    if (!(musicBox.get('dynamicArtDB') ?? true)) return kMaterialBlack;
-    if (isArtworkDark ?? true) return Colors.white;
+    final stored = musicBox.get('lyricsTextColor');
+    if (stored is int) return Color(stored);
+    return Colors.white;
+  }
+
+  Color _containerColor() {
+    final stored = musicBox.get('lyricsContainerColor');
+    if (stored is int) return Color(stored);
     return Colors.black;
   }
 
+  double _containerOpacity() {
+    final stored = musicBox.get('lyricsContainerOpacity');
+    if (stored is num) return stored.toDouble().clamp(0.0, 1.0);
+    return 0.7;
+  }
+
   Color _highlightColor() {
-    return _textColor().withValues(alpha: 0.18);
+    return _containerColor().withValues(alpha: _containerOpacity());
   }
 
   double _fontSize() {

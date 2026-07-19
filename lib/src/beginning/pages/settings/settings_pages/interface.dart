@@ -300,6 +300,94 @@ class _InterfaceState extends State<Interface> {
                       ),
                       Material(
                         color: Colors.transparent,
+                        child: ListTile(
+                          title: const Text(
+                            "Lyrics-Schriftfarbe",
+                            style: TextStyle(color: Colors.white),
+                          ),
+                          subtitle: const Text(
+                            "Textfarbe der synchronisierten Lyrics.",
+                            style: TextStyle(color: Colors.white38),
+                          ),
+                          trailing: _colorSwatch(_lyricsTextColor()),
+                          onTap: () async {
+                            final color = await _pickColor(
+                              title: "Lyrics-Schriftfarbe",
+                              current: _lyricsTextColor(),
+                            );
+                            if (color == null) return;
+                            setState(() {
+                              musicBox.put('lyricsTextColor', color.toARGB32());
+                            });
+                          },
+                        ),
+                      ),
+                      Material(
+                        color: Colors.transparent,
+                        child: ListTile(
+                          title: const Text(
+                            "Lyrics-Container-Farbe",
+                            style: TextStyle(color: Colors.white),
+                          ),
+                          subtitle: const Text(
+                            "Hintergrundfarbe hinter der aktuellen Lyrics-Zeile.",
+                            style: TextStyle(color: Colors.white38),
+                          ),
+                          trailing: _colorSwatch(_lyricsContainerColor()),
+                          onTap: () async {
+                            final color = await _pickColor(
+                              title: "Lyrics-Container-Farbe",
+                              current: _lyricsContainerColor(),
+                            );
+                            if (color == null) return;
+                            setState(() {
+                              musicBox.put('lyricsContainerColor', color.toARGB32());
+                            });
+                          },
+                        ),
+                      ),
+                      Material(
+                        color: Colors.transparent,
+                        child: ListTile(
+                          title: Text(
+                            "Lyrics-Container-Opacity (${(_lyricsContainerOpacity() * 100).round()}%)",
+                            style: const TextStyle(color: Colors.white),
+                          ),
+                          subtitle: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text(
+                                "Transparenz des Lyrics-Hintergrundcontainers.",
+                                style: TextStyle(color: Colors.white38),
+                              ),
+                              SliderTheme(
+                                data: const SliderThemeData(
+                                  trackHeight: 3,
+                                  thumbShape: RoundSliderThumbShape(
+                                    enabledThumbRadius: 5,
+                                  ),
+                                  inactiveTrackColor: Colors.white10,
+                                ),
+                                child: Slider(
+                                  value: _lyricsContainerOpacity(),
+                                  min: 0,
+                                  max: 1,
+                                  divisions: 20,
+                                  activeColor: Colors.white,
+                                  onChanged: (value) {
+                                    setState(() {
+                                      musicBox.put(
+                                          'lyricsContainerOpacity', value);
+                                    });
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      Material(
+                        color: Colors.transparent,
                         child: CheckboxListTile(
                           activeColor: kCorrect,
                           checkColor: kMaterialBlack,
@@ -482,6 +570,95 @@ class _InterfaceState extends State<Interface> {
               ],
             ),
           ),
+        );
+      },
+    );
+  }
+
+  Color _lyricsTextColor() {
+    final stored = musicBox.get('lyricsTextColor');
+    if (stored is int) return Color(stored);
+    return Colors.white;
+  }
+
+  Color _lyricsContainerColor() {
+    final stored = musicBox.get('lyricsContainerColor');
+    if (stored is int) return Color(stored);
+    return Colors.black;
+  }
+
+  double _lyricsContainerOpacity() {
+    final stored = musicBox.get('lyricsContainerOpacity');
+    if (stored is num) return stored.toDouble().clamp(0.0, 1.0);
+    return 0.7;
+  }
+
+  Widget _colorSwatch(Color color) {
+    return Container(
+      width: 28,
+      height: 28,
+      decoration: BoxDecoration(
+        color: color,
+        shape: BoxShape.circle,
+        border: Border.all(color: Colors.white54, width: 1.5),
+      ),
+    );
+  }
+
+  Future<Color?> _pickColor({
+    required String title,
+    required Color current,
+  }) {
+    const presets = <Color>[
+      Colors.white,
+      Colors.black,
+      Color(0xFFBDBDBD),
+      Color(0xFF90CAF9),
+      Color(0xFFA5D6A7),
+      Color(0xFFFFCC80),
+      Color(0xFFEF9A9A),
+      Color(0xFFCE93D8),
+      Color(0xFF80CBC4),
+      Color(0xFFFFF59D),
+    ];
+
+    return showDialog<Color>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          backgroundColor: kMaterialBlack,
+          title: Text(
+            title,
+            style: const TextStyle(color: Colors.white, fontFamily: 'Raleway'),
+          ),
+          content: Wrap(
+            spacing: 12,
+            runSpacing: 12,
+            children: presets.map((color) {
+              final selected = color.toARGB32() == current.toARGB32();
+              return GestureDetector(
+                onTap: () => Navigator.pop(context, color),
+                child: Container(
+                  width: 36,
+                  height: 36,
+                  decoration: BoxDecoration(
+                    color: color,
+                    shape: BoxShape.circle,
+                    border: Border.all(
+                      color: selected ? kCorrect : Colors.white38,
+                      width: selected ? 3 : 1.5,
+                    ),
+                  ),
+                ),
+              );
+            }).toList(),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Abbrechen', style: TextStyle(color: Colors.white70)),
+            ),
+          ],
         );
       },
     );
