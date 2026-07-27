@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:lrc/lrc.dart';
 
 import 'package:phoenix/src/beginning/utilities/global_variables.dart';
+import 'lyrics_backend_scan.dart';
 import 'lyrics_loader.dart';
 import 'lyrics_state.dart';
 
@@ -39,6 +40,20 @@ class LyricsController extends ChangeNotifier {
     final result = await _loader.load(item);
     if (_loadingFor != item) return;
 
+    current = result;
+    _notifyUi();
+
+    LyricsBackendScanQueue.inst.enqueueIfNeeded(
+      item,
+      hasSyncedLyrics: result.mode == LyricsMode.synced,
+    );
+  }
+
+  Future<void> refreshIfCurrent(String trackPath) async {
+    final item = _loadingFor;
+    if (item == null || item.id != trackPath) return;
+    final result = await _loader.load(item);
+    if (_loadingFor != item) return;
     current = result;
     _notifyUi();
   }

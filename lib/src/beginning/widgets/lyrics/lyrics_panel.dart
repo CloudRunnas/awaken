@@ -7,6 +7,7 @@ import 'package:phoenix/src/beginning/utilities/global_variables.dart';
 import 'package:phoenix/src/beginning/utilities/lyrics/lyrics_controller.dart';
 import 'package:phoenix/src/beginning/utilities/lyrics/lyrics_state.dart';
 import 'package:phoenix/src/beginning/widgets/lyrics/lyrics_lrc_parsed_view.dart';
+import 'package:phoenix/src/beginning/widgets/lyrics/lyrics_scan_status_icon.dart';
 import 'package:phoenix/src/beginning/widgets/now_art.dart';
 
 class LyricsPanel extends StatelessWidget {
@@ -94,6 +95,21 @@ class LyricsPanel extends StatelessWidget {
     );
   }
 
+  Widget _withScanIcon(BuildContext context, Widget child) {
+    final trackPath = nowMediaItem.id;
+    return Stack(
+      children: [
+        Positioned.fill(child: child),
+        if (trackPath.isNotEmpty)
+          Positioned(
+            top: 4,
+            right: 4,
+            child: LyricsScanStatusIcon(trackPath: trackPath),
+          ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return ListenableBuilder(
@@ -103,53 +119,64 @@ class LyricsPanel extends StatelessWidget {
         final current = controller.current;
 
         if (current.mode == LyricsMode.loading) {
-          return Center(
-            child: Text(
-              current.statusMessage,
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: _fontSize(),
-                fontFamily: 'Raleway',
-                fontWeight: FontWeight.w600,
-                color: _textColor(),
+          return _withScanIcon(
+            context,
+            Center(
+              child: Text(
+                current.statusMessage,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: _fontSize(),
+                  fontFamily: 'Raleway',
+                  fontWeight: FontWeight.w600,
+                  color: _textColor(),
+                ),
               ),
             ),
           );
         }
 
         if (current.mode == LyricsMode.synced && controller.synced != null) {
-          return LyricsLRCParsedView(
-            lrc: controller.synced,
-            plainText: controller.plainText,
-            background: _artBackground(),
-            textColor: _textColor(),
-            highlightColor: _highlightColor(),
-            fontSize: _fontSize(),
-            canShowToggleFullscreenButton: allowFullscreen,
-            onFullscreenTap: () => _openFullscreen(context),
+          return _withScanIcon(
+            context,
+            LyricsLRCParsedView(
+              lrc: controller.synced,
+              plainText: controller.plainText,
+              background: _artBackground(),
+              textColor: _textColor(),
+              highlightColor: _highlightColor(),
+              fontSize: _fontSize(),
+              canShowToggleFullscreenButton: allowFullscreen,
+              onFullscreenTap: () => _openFullscreen(context),
+            ),
           );
         }
 
         final text = controller.displayText.trim();
         if (text.isEmpty || text == "Couldn't find any matching lyrics.") {
-          if (showArtWhenNoLyrics) return _artBackground();
-          return Center(
-            child: Text(
-              text.isEmpty
-                  ? "Couldn't find any matching lyrics."
-                  : text,
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: _fontSize(),
-                fontFamily: 'Raleway',
-                fontWeight: FontWeight.w600,
-                color: _textColor(),
+          if (showArtWhenNoLyrics) {
+            return _withScanIcon(context, _artBackground());
+          }
+          return _withScanIcon(
+            context,
+            Center(
+              child: Text(
+                text.isEmpty
+                    ? "Couldn't find any matching lyrics."
+                    : text,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: _fontSize(),
+                  fontFamily: 'Raleway',
+                  fontWeight: FontWeight.w600,
+                  color: _textColor(),
+                ),
               ),
             ),
           );
         }
 
-        return _plainLyrics(text);
+        return _withScanIcon(context, _plainLyrics(text));
       },
     );
   }

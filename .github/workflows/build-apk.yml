@@ -31,7 +31,9 @@ jobs:
         run: |
           flutter build apk --release --split-per-abi --build-number=${{ github.run_number }} \
             --dart-define=DEEPL_PROXY_URL=${{ vars.DEEPL_PROXY_URL }} \
-            --dart-define=PHOENIX_TRANSLATION_API_KEY=${{ secrets.PHOENIX_TRANSLATION_API_KEY }}
+            --dart-define=PHOENIX_TRANSLATION_API_KEY=${{ secrets.PHOENIX_TRANSLATION_API_KEY }} \
+            --dart-define=LYRICS_ALIGNER_URL=${{ vars.LYRICS_ALIGNER_URL }} \
+            --dart-define=LYRICS_ALIGNER_API_KEY=${{ secrets.LYRICS_ALIGNER_API_KEY }}
 
       - uses: actions/upload-artifact@v4
         with:

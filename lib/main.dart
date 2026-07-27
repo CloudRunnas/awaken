@@ -18,6 +18,7 @@ import 'package:phoenix/src/beginning/utilities/constants.dart';
 import 'package:phoenix/src/beginning/pages/settings/settings_pages/privacy.dart';
 import 'package:phoenix/src/beginning/utilities/global_variables.dart';
 import 'package:phoenix/src/beginning/utilities/init.dart';
+import 'package:phoenix/src/beginning/utilities/lyrics/lyrics_backend_scan.dart';
 import 'package:phoenix/src/beginning/utilities/provider/provider.dart';
 import 'package:audio_service/audio_service.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -41,6 +42,7 @@ void main() async {
   };
   await cacheImages();
   await dataInit();
+  LyricsBackendScanQueue.inst.loadFromHive();
   await fetchSongs();
   audioHandler = await AudioService.init(
     builder: () => AudioPlayerTask(),

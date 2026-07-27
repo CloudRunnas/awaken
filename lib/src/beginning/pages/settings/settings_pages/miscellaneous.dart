@@ -5,8 +5,9 @@ import 'package:phoenix/src/beginning/utilities/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:phoenix/src/beginning/utilities/provider/provider.dart';
 import 'package:provider/provider.dart';
+import 'package:phoenix/src/beginning/utilities/page_backend/file_exporer.dart';
+import 'package:phoenix/src/beginning/utilities/lyrics/lyrics_backend_scan.dart';
 import 'directories.dart';
-import '../../../utilities/page_backend/file_exporer.dart';
 
 Map folderData = {};
 
@@ -219,6 +220,38 @@ class _MiscellaneousState extends State<Miscellaneous> {
                             });
                           },
                           controlAffinity: ListTileControlAffinity.leading,
+                        ),
+                      ),
+                      Material(
+                        color: Colors.transparent,
+                        child: ListTile(
+                          leading: Icon(
+                            Icons.lyrics_outlined,
+                            color: darkModeOn ? Colors.white : Colors.black,
+                          ),
+                          title: Text(
+                            "Lyriks-Scan-Cache leeren",
+                            style: TextStyle(
+                              color: darkModeOn ? Colors.white : Colors.black,
+                            ),
+                          ),
+                          subtitle: Text(
+                            "Löscht Scan-Status und App-Cache. Sidecar-.lrc bleiben.",
+                            style: TextStyle(
+                              color:
+                                  darkModeOn ? Colors.white38 : Colors.black38,
+                            ),
+                          ),
+                          onTap: () async {
+                            await LyricsBackendScanQueue.inst.clearScanCache();
+                            if (!mounted) return;
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text("Lyriks-Scan-Cache geleert"),
+                              ),
+                            );
+                            setState(() {});
+                          },
                         ),
                       ),
                     ],
