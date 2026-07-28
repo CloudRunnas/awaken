@@ -182,6 +182,22 @@ class LyricsBackendScanQueue extends ChangeNotifier {
     // Local synced lyrics: skip job, but do NOT mark as MusicSync-ready.
     if (hasSyncedLyrics) return;
 
+    if (!_hasUsableMeta(item)) {
+      final existingBad = _states[path];
+      if (existingBad == null ||
+          existingBad.status == LyricsScanStatus.unknown ||
+          existingBad.status == LyricsScanStatus.running) {
+        _set(
+          path,
+          const LyricsScanState(
+            status: LyricsScanStatus.failed,
+            error: 'missing artist/title tags',
+          ),
+        );
+      }
+      return;
+    }
+
     final existing = _states[path];
     if (existing != null &&
         (existing.status == LyricsScanStatus.ready ||
@@ -194,6 +210,17 @@ class LyricsBackendScanQueue extends ChangeNotifier {
     _queuedIds.add(path);
     _queue.add(item);
     _pump();
+  }
+
+  bool _hasUsableMeta(MediaItem item) {
+    return _isUsableTag(item.artist) && _isUsableTag(item.title);
+  }
+
+  bool _isUsableTag(String? value) {
+    final t = (value ?? '').trim();
+    if (t.isEmpty) return false;
+    final lower = t.toLowerCase();
+    return lower != '<unknown>' && lower != 'unknown';
   }
 
   void _pump() {

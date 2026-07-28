@@ -56,22 +56,36 @@ class _AllofemState extends State<Allofem>
 
   Widget _filterChip(String label, TracksLyricsFilter value) {
     final selected = _filter == value;
-    final accent =
-        musicBox.get("dynamicArtDB") ?? true ? nowContrast : Colors.white70;
+    // Phoenix: cyan accent when selected; glass-dark unselected — never use
+    // nowContrast (near-white) as fill or label/background collapse together.
+    const selectedBg = Color(0xFF028ac4); // kPhoenixColor
+    final unselectedBg = Colors.white.withOpacity(0.10);
+    final labelColor = selected ? Colors.white : Colors.white70;
     return Padding(
       padding: const EdgeInsets.only(right: 8),
       child: FilterChip(
         label: Text(
           label,
           style: TextStyle(
-            color: selected ? Colors.black87 : Colors.white70,
+            color: labelColor,
             fontSize: 12,
+            fontWeight: selected ? FontWeight.w600 : FontWeight.w400,
           ),
         ),
         selected: selected,
         showCheckmark: false,
-        selectedColor: accent.withOpacity(0.85),
-        backgroundColor: Colors.white12,
+        selectedColor: selectedBg,
+        backgroundColor: unselectedBg,
+        checkmarkColor: Colors.white,
+        side: BorderSide(
+          color: selected ? selectedBg : Colors.white24,
+          width: 1,
+        ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(kRounded),
+        ),
+        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+        visualDensity: VisualDensity.compact,
         onSelected: (_) {
           setState(() {
             // Single-select: tapping active filter clears to all.
