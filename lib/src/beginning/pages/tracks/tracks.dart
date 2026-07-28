@@ -7,7 +7,10 @@ import 'package:phoenix/src/beginning/utilities/page_backend/albums_back.dart';
 import 'package:phoenix/src/beginning/widgets/dialogues/corrupted_file_dialog.dart';
 import 'package:phoenix/src/beginning/widgets/list_header.dart';
 import 'package:phoenix/src/beginning/utilities/audio_handlers/previous_play_skip.dart';
+import 'package:phoenix/src/beginning/utilities/lyrics/lyrics_backend_scan.dart';
+import 'package:phoenix/src/beginning/utilities/lyrics/track_lyrics_filter.dart';
 import 'package:flutter/material.dart';
+import 'package:on_audio_query/on_audio_query.dart';
 import '../../widgets/dialogues/on_hold.dart';
 
 class Allofem extends StatefulWidget {
@@ -20,10 +23,63 @@ class Allofem extends StatefulWidget {
 class _AllofemState extends State<Allofem>
     with AutomaticKeepAliveClientMixin<Allofem> {
   ScrollController? _scrollBarController;
+  TracksLyricsFilter _filter = TracksLyricsFilter.all;
+
   @override
   void initState() {
     _scrollBarController = ScrollController();
+    LyricsBackendScanQueue.inst.addListener(_onScanUpdate);
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    LyricsBackendScanQueue.inst.removeListener(_onScanUpdate);
+    _scrollBarController?.dispose();
+    super.dispose();
+  }
+
+  void _onScanUpdate() {
+    if (mounted) setState(() {});
+  }
+
+  List<int> _filteredIndices() {
+    final indices = <int>[];
+    for (var i = 0; i < songList.length; i++) {
+      final path = songList[i].data;
+      if (TrackLyricsClassifier.matches(path, _filter)) {
+        indices.add(i);
+      }
+    }
+    return indices;
+  }
+
+  Widget _filterChip(String label, TracksLyricsFilter value) {
+    final selected = _filter == value;
+    final accent =
+        musicBox.get("dynamicArtDB") ?? true ? nowContrast : Colors.white70;
+    return Padding(
+      padding: const EdgeInsets.only(right: 8),
+      child: FilterChip(
+        label: Text(
+          label,
+          style: TextStyle(
+            color: selected ? Colors.black87 : Colors.white70,
+            fontSize: 12,
+          ),
+        ),
+        selected: selected,
+        showCheckmark: false,
+        selectedColor: accent.withOpacity(0.85),
+        backgroundColor: Colors.white12,
+        onSelected: (_) {
+          setState(() {
+            // Single-select: tapping active filter clears to all.
+            _filter = selected ? TracksLyricsFilter.all : value;
+          });
+        },
+      ),
+    );
   }
 
   @override
@@ -44,6 +100,9 @@ class _AllofemState extends State<Allofem>
     if (!isPlayerShown) {
       pc.hide();
     }
+
+    final filtered = _filteredIndices();
+
     return Scrollbar(
       controller: _scrollBarController,
       child: RefreshIndicator(
@@ -62,21 +121,45 @@ class _AllofemState extends State<Allofem>
           physics: musicBox.get("fluidAnimation") ?? true
               ? const BouncingScrollPhysics()
               : const ClampingScrollPhysics(),
-          itemCount: songList.length + 1,
+          itemCount: filtered.length + 2,
           itemBuilder: (context, index) {
             if (index == 0) {
               return ListHeader(deviceWidth, songList, "all");
             }
+            if (index == 1) {
+              return Padding(
+                padding: const EdgeInsets.fromLTRB(12, 4, 12, 8),
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children: [
+                      _filterChip('No Lyrics', TracksLyricsFilter.noLyrics),
+                      _filterChip('With Lyrics', TracksLyricsFilter.withLyrics),
+                      _filterChip(
+                        'With Synced Lyrics',
+                        TracksLyricsFilter.withSyncedLyrics,
+                      ),
+                      _filterChip(
+                        'With MusicSync-Lyrics',
+                        TracksLyricsFilter.withMusicSyncLyrics,
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            }
+            final songIndex = filtered[index - 2];
+            final SongModel song = songList[songIndex];
             return Material(
               color: Colors.transparent,
               child: ListTile(
                 onTap: () async {
                   if (!Begin.isLoading) {
-                    if (songListMediaItems[index - 1].duration ==
+                    if (songListMediaItems[songIndex].duration ==
                         const Duration(milliseconds: 0)) {
                       corruptedFile(context);
                     } else {
-                      await playThis(index - 1, "all");
+                      await playThis(songIndex, "all");
                     }
                   }
                 },
@@ -92,7 +175,7 @@ class _AllofemState extends State<Allofem>
                         child: OnHold(
                             classContext: context,
                             listOfSong: songList,
-                            index: index - 1,
+                            index: songIndex,
                             car: orientedCar,
                             heightOfDevice: deviceHeight,
                             widthOfDevice: deviceWidth,
@@ -102,7 +185,7 @@ class _AllofemState extends State<Allofem>
                   }
                 },
                 title: Text(
-                  songList[index - 1].title,
+                  song.title,
                   maxLines: 2,
                   style: const TextStyle(
                     color: Colors.white70,
@@ -119,7 +202,7 @@ class _AllofemState extends State<Allofem>
                 subtitle: Opacity(
                   opacity: 0.5,
                   child: Text(
-                    songList[index - 1].artist!,
+                    song.artist!,
                     maxLines: 1,
                     style: const TextStyle(
                       color: Colors.white70,
@@ -148,7 +231,7 @@ class _AllofemState extends State<Allofem>
                           fit: BoxFit.cover,
                           image: MemoryImage(artworksData[
                                   (musicBox.get("artworksPointer") ??
-                                      {})[songList[index - 1].id]] ??
+                                      {})[song.id]] ??
                               defaultNone!),
                         ),
                       ),

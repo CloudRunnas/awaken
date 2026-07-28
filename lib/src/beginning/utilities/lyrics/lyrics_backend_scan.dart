@@ -89,13 +89,20 @@ class LyricsBackendScanQueue extends ChangeNotifier {
   LyricsBackendScanQueue._();
   static final LyricsBackendScanQueue inst = LyricsBackendScanQueue._();
 
-  static const int maxConcurrency = 5;
+  /// Max concurrent in-flight jobs (POST + polling).
+  static const int maxPollConcurrency = 30;
+
+  /// Max concurrent audio PUTs.
+  static const int maxUploadConcurrency = 5;
+
   static const String _hiveKey = 'lyricsBackendScanStates';
 
   final Map<String, LyricsScanState> _states = {};
   final Queue<MediaItem> _queue = Queue<MediaItem>();
   final Set<String> _queuedIds = {};
-  int _active = 0;
+  int _activeJobs = 0;
+  int _activeUploads = 0;
+  final Queue<Completer<void>> _uploadWaiters = Queue<Completer<void>>();
 
   bool get isConfigured =>
       kLyricsAlignerUrl.trim().isNotEmpty &&
@@ -103,6 +110,9 @@ class LyricsBackendScanQueue extends ChangeNotifier {
 
   LyricsScanState stateFor(String trackPath) =>
       _states[trackPath] ?? const LyricsScanState();
+
+  bool isMusicSync(String trackPath) =>
+      stateFor(trackPath).status == LyricsScanStatus.ready;
 
   void loadFromHive() {
     final raw = musicBox.get(_hiveKey);
@@ -141,16 +151,37 @@ class LyricsBackendScanQueue extends ChangeNotifier {
     await musicBox.put(_hiveKey, map);
   }
 
+  /// Enqueue every library track after scan (App open / pull-to-refresh).
+  void enqueueLibrary(List<MediaItem> items) {
+    if (!isConfigured) return;
+    for (final item in items) {
+      enqueueIfNeeded(item, hasSyncedLyrics: _hasLocalSyncedSidecarOrCache(item.id));
+    }
+  }
+
+  bool _hasLocalSyncedSidecarOrCache(String path) {
+    if (path.isEmpty) return false;
+    final sidecar = File(
+      '${path.contains('/') ? path.substring(0, path.lastIndexOf('/')) : '.'}/${_base(path)}.lrc',
+    );
+    if (sidecar.existsSync()) return true;
+    try {
+      final cache = File(
+        '${applicationFileDirectory.path}/lyrics/${path.hashCode.abs()}.lrc',
+      );
+      if (cache.existsSync()) return true;
+    } catch (_) {}
+    return false;
+  }
+
   void enqueueIfNeeded(MediaItem item, {required bool hasSyncedLyrics}) {
     if (!isConfigured) return;
     final path = item.id;
     if (path.isEmpty) return;
-    if (hasSyncedLyrics) {
-      _states[path] = const LyricsScanState(status: LyricsScanStatus.ready);
-      _persist();
-      notifyListeners();
-      return;
-    }
+
+    // Local synced lyrics: skip job, but do NOT mark as MusicSync-ready.
+    if (hasSyncedLyrics) return;
+
     final existing = _states[path];
     if (existing != null &&
         (existing.status == LyricsScanStatus.ready ||
@@ -158,16 +189,7 @@ class LyricsBackendScanQueue extends ChangeNotifier {
             existing.status == LyricsScanStatus.running)) {
       return;
     }
-    // Skip if sidecar already exists
-    final sidecar = File(
-      '${path.contains('/') ? path.substring(0, path.lastIndexOf('/')) : '.'}/${_base(path)}.lrc',
-    );
-    if (sidecar.existsSync()) {
-      _states[path] = const LyricsScanState(status: LyricsScanStatus.ready);
-      _persist();
-      notifyListeners();
-      return;
-    }
+
     if (_queuedIds.contains(path)) return;
     _queuedIds.add(path);
     _queue.add(item);
@@ -175,14 +197,32 @@ class LyricsBackendScanQueue extends ChangeNotifier {
   }
 
   void _pump() {
-    while (_active < maxConcurrency && _queue.isNotEmpty) {
+    while (_activeJobs < maxPollConcurrency && _queue.isNotEmpty) {
       final item = _queue.removeFirst();
       _queuedIds.remove(item.id);
-      _active++;
+      _activeJobs++;
       unawaited(_runJob(item).whenComplete(() {
-        _active--;
+        _activeJobs--;
         _pump();
       }));
+    }
+  }
+
+  Future<void> _acquireUploadSlot() async {
+    if (_activeUploads < maxUploadConcurrency) {
+      _activeUploads++;
+      return;
+    }
+    final waiter = Completer<void>();
+    _uploadWaiters.add(waiter);
+    await waiter.future;
+  }
+
+  void _releaseUploadSlot() {
+    if (_uploadWaiters.isNotEmpty) {
+      _uploadWaiters.removeFirst().complete();
+    } else {
+      _activeUploads--;
     }
   }
 
@@ -200,7 +240,7 @@ class LyricsBackendScanQueue extends ChangeNotifier {
     try {
       final start = await _postJob(item);
       final mode = start['mode'] as String? ?? '';
-        if (mode == 'ready') {
+      if (mode == 'ready') {
         await _persistLrcFromUrl(path, start['lrc']?['url'] as String?);
         _set(
           path,
@@ -244,28 +284,51 @@ class LyricsBackendScanQueue extends ChangeNotifier {
         return;
       }
 
+      var uploaded = false;
+
+      // Legacy: upload URL may still appear on started (old backend).
       if (mode == 'started') {
         final uploadUrl = start['upload']?['audio']?['url'] as String?;
-        if (uploadUrl == null) {
-          _set(
-            path,
-            const LyricsScanState(
-              status: LyricsScanStatus.failed,
-              error: 'missing upload url',
-            ),
-          );
-          return;
+        if (uploadUrl != null) {
+          await _uploadAudioGuarded(path, uploadUrl);
+          uploaded = true;
         }
-        await _uploadAudio(path, uploadUrl);
       }
 
-      // Poll until ready/failed
+      // Poll until ready/failed; upload when upload_ready.
       for (var i = 0; i < 240; i++) {
         await Future.delayed(const Duration(seconds: 5));
         final status = await _getJob(jobId);
         final m = status['mode'] as String? ?? 'running';
         final step = status['step'] as String? ?? '';
         final stepName = status['step_name'] as String? ?? '';
+
+        if (m == 'upload_ready' && !uploaded) {
+          final uploadUrl = status['upload']?['audio']?['url'] as String?;
+          if (uploadUrl == null) {
+            _set(
+              path,
+              const LyricsScanState(
+                status: LyricsScanStatus.failed,
+                error: 'missing upload url',
+              ),
+            );
+            return;
+          }
+          await _uploadAudioGuarded(path, uploadUrl);
+          uploaded = true;
+          _set(
+            path,
+            LyricsScanState(
+              status: LyricsScanStatus.running,
+              step: step,
+              stepName: stepName,
+              jobId: jobId,
+            ),
+          );
+          continue;
+        }
+
         if (m == 'ready') {
           await _persistLrcFromUrl(path, status['lrc']?['url'] as String?);
           _set(
@@ -322,6 +385,15 @@ class LyricsBackendScanQueue extends ChangeNotifier {
           error: e.toString(),
         ),
       );
+    }
+  }
+
+  Future<void> _uploadAudioGuarded(String path, String uploadUrl) async {
+    await _acquireUploadSlot();
+    try {
+      await _uploadAudio(path, uploadUrl);
+    } finally {
+      _releaseUploadSlot();
     }
   }
 

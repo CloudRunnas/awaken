@@ -16,6 +16,7 @@ import 'package:phoenix/src/beginning/utilities/page_backend/artists_back.dart';
 import 'package:phoenix/src/beginning/utilities/page_backend/genres_back.dart';
 import 'package:phoenix/src/beginning/utilities/page_backend/mansion_back.dart';
 import 'package:phoenix/src/beginning/utilities/scraping/image_scrape.dart';
+import 'package:phoenix/src/beginning/utilities/lyrics/lyrics_backend_scan.dart';
 
 import 'has_network.dart';
 
@@ -120,6 +121,7 @@ fetchAll() async {
   await gettinSongArts();
   ascend = true;
   debugPrint("ASCENDED");
+  LyricsBackendScanQueue.inst.enqueueLibrary(songListMediaItems);
   rootState.provideman();
   if (musicBox.get("isolation") == null
       ? true
