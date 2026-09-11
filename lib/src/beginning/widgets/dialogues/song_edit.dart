@@ -328,17 +328,27 @@ class _SongEditState extends State<SongEdit> with TickerProviderStateMixin {
                                 onTap: () async {
                                   if (shouldEdit) {
                                     Navigator.pop(context);
-                                    await editSong(
+                                    bool success = await editSong(
                                         context: context,
                                         songFile: widget.filePath,
                                         title: title,
                                         album: album,
                                         artist: artist,
                                         genre: genre);
-                                    await Future.delayed(
-                                        const Duration(seconds: 1));
-                                    refresh = true;
-                                    rootState.provideman();
+                                    if (!success) {
+                                      if (context.mounted) {
+                                        ScaffoldMessenger.of(context).showSnackBar(
+                                          const SnackBar(
+                                            content: Text('Failed to edit metadata. The file format may not be supported.'),
+                                          ),
+                                        );
+                                      }
+                                    } else {
+                                      await Future.delayed(
+                                          const Duration(seconds: 1));
+                                      refresh = true;
+                                      rootState.provideman();
+                                    }
                                   } else {
                                     Navigator.pop(context);
                                   }
