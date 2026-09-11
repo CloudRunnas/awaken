@@ -9,7 +9,11 @@ import 'package:phoenix/src/beginning/utilities/global_variables.dart';
 import 'package:phoenix/src/beginning/utilities/native/go_native.dart';
 import 'package:phoenix/src/beginning/utilities/set_ringtone.dart';
 import 'package:phoenix/src/beginning/widgets/seek_bar.dart';
-
+import 'package:another_xlider/another_xlider.dart';
+import 'package:another_xlider/models/trackbar.dart';
+import 'package:another_xlider/models/tooltip/tooltip.dart';
+import 'package:another_xlider/models/tooltip/tooltip_box.dart';
+import 'package:another_xlider/models/slider_step.dart';
 final ringtonePlayer = AudioPlayer();
 
 class Ringtone extends StatefulWidget {

@@ -2,7 +2,11 @@ import '../support/package_test_harness.dart';
 import 'package:another_xlider/another_xlider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-
+import 'package:another_xlider/another_xlider.dart';
+import 'package:another_xlider/models/trackbar.dart';
+import 'package:another_xlider/models/tooltip/tooltip.dart';
+import 'package:another_xlider/models/tooltip/tooltip_box.dart';
+import 'package:another_xlider/models/slider_step.dart';
 void main() {
   initPackageIntegrationTest();
 
