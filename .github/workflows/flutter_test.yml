@@ -7,13 +7,29 @@ on:
     branches: [ main ]
 
 jobs:
-  test:
+  build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+          cache: gradle
+
       - uses: subosito/flutter-action@v2
         with:
           channel: stable
+          flutter-version: "3.44.1"
+          cache: true
+
+      - run: flutter pub get
+      - run: bash scripts/patch_android_namespaces.sh
+      - run: bash scripts/patch_on_audio_edit_kotlin.sh
+      - run: bash scripts/patch_legacy_compile_sdk.sh
+      - run: flutter analyze --no-fatal-infos --no-fatal-warnings
+  test:
       - name: Install dependencies
         run: flutter pub get
       - name: Run tests
