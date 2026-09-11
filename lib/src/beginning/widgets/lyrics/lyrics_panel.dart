@@ -16,6 +16,8 @@ class LyricsPanel extends StatelessWidget {
   final bool showArtWhenNoLyrics;
   final bool allowFullscreen;
   final bool compactArt;
+  final Color? textColor;
+  final Color? backgroundColor;
 
   const LyricsPanel({
     super.key,
@@ -24,9 +26,12 @@ class LyricsPanel extends StatelessWidget {
     this.showArtWhenNoLyrics = false,
     this.allowFullscreen = true,
     this.compactArt = false,
+    this.textColor,
+    this.backgroundColor,
   });
 
   Color _textColor() {
+    if (textColor != null) return textColor!;
     final stored = musicBox.get('lyricsTextColor');
     if (stored is int) return Color(stored);
     return Colors.white;
@@ -142,7 +147,9 @@ class LyricsPanel extends StatelessWidget {
             LyricsLRCParsedView(
               lrc: controller.synced,
               plainText: controller.plainText,
-              background: _artBackground(),
+              background: backgroundColor != null
+                  ? Container(color: backgroundColor)
+                  : _artBackground(),
               textColor: _textColor(),
               highlightColor: _highlightColor(),
               fontSize: _fontSize(),

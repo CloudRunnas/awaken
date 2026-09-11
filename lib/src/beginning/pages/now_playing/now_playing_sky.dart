@@ -199,6 +199,8 @@ class _NowPlayingSkyState extends State<NowPlayingSky>
                                           ]).createShader(Rect.fromLTRB(0, 0,
                                               bounds.width, bounds.height)),
                                       child: LyricsPanel(
+                                        textColor: Colors.white,
+                                        backgroundColor: Colors.black87,
                                         plainScrollController:
                                             lyricscrollController,
                                         plainPadding: EdgeInsets.only(
@@ -654,6 +656,8 @@ class _NowPlayingSkyState extends State<NowPlayingSky>
                                                   bounds.width,
                                                   bounds.height)),
                                           child: LyricsPanel(
+                                        textColor: Colors.white,
+                                        backgroundColor: Colors.black87,
                                             plainScrollController:
                                                 lyricscrollController,
                                             plainPadding: EdgeInsets.only(
@@ -1152,6 +1156,8 @@ class _NowPlayingSkyState extends State<NowPlayingSky>
                                                   bounds.width,
                                                   bounds.height)),
                                           child: LyricsPanel(
+                                        textColor: Colors.white,
+                                        backgroundColor: Colors.black87,
                                             plainScrollController:
                                                 lyricscrollController,
                                             plainPadding: EdgeInsets.only(

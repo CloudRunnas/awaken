@@ -531,6 +531,8 @@ class _NowPlayingState extends State<NowPlaying> with TickerProviderStateMixin {
                                       ],
                                     ),
                                     child: LyricsPanel(
+                                        textColor: Colors.white,
+                                        backgroundColor: Colors.black87,
                                       plainPadding: EdgeInsets.only(
                                         top: deviceWidth! / 18.5,
                                         left: deviceWidth! / 20,
@@ -1051,6 +1053,8 @@ class _NowPlayingState extends State<NowPlaying> with TickerProviderStateMixin {
                                 ],
                               ),
                               child: LyricsPanel(
+                                        textColor: Colors.white,
+                                        backgroundColor: Colors.black87,
                                 plainPadding: EdgeInsets.only(
                                   top: deviceWidth! / 18.5,
                                   left: deviceWidth! / 20,
