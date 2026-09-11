@@ -361,7 +361,7 @@ class LyricsLRCParsedViewState extends State<LyricsLRCParsedView> {
       children: [
         AnimatedOpacity(
           duration: const Duration(milliseconds: _lrcOpacityDurationMS),
-          opacity: _isCurrentLineEmpty ? 1.0 : 0.35,
+          opacity: _isCurrentLineEmpty ? 1.0 : 0.1,
           child: widget.background,
         ),
         Listener(

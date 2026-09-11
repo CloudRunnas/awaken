@@ -59,7 +59,7 @@ class _AllofemState extends State<Allofem>
     // Phoenix: cyan accent when selected; glass-dark unselected — never use
     // nowContrast (near-white) as fill or label/background collapse together.
     const selectedBg = Color(0xFF028ac4); // kPhoenixColor
-    final unselectedBg = Colors.white.withOpacity(0.10);
+    final unselectedBg = Colors.black54;
     final labelColor = selected ? Colors.white : Colors.white70;
     return Padding(
       padding: const EdgeInsets.only(right: 8),

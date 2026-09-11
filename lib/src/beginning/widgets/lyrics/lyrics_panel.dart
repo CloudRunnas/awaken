@@ -41,7 +41,7 @@ class LyricsPanel extends StatelessWidget {
   double _containerOpacity() {
     final stored = musicBox.get('lyricsContainerOpacity');
     if (stored is num) return stored.toDouble().clamp(0.0, 1.0);
-    return 0.7;
+    return 0.85;
   }
 
   Color _highlightColor() {
